@@ -3,7 +3,7 @@ import { Footer, Navbar } from "../components";
 import $ from "jquery";
 import "datatables.net";
 import "datatables.net-dt/css/jquery.dataTables.css";
-import { FaPlusSquare, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPlusSquare, FaEdit, FaTrash, FaCommentAlt } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../assets/css/livestock.css";
@@ -11,14 +11,18 @@ import "../assets/css/livestock.css";
 const LiveStock = () => {
   const user_id = localStorage.getItem("id");
   const navigate = useNavigate();
-  const [animal, setAnimal] = React.useState(null);
+  const [animal, setAnimal] = React.useState([]);
+  const [comment, setComment] = React.useState([]);
   const [animalName, setAnimalName] = React.useState("");
   const [animalType, setAnimalType] = React.useState("");
   const [animalDetail, setAnimalDetail] = React.useState("");
   const [animaPhoto, setAnimalPhoto] = React.useState("");
+  const [price, setPrice] = React.useState();
   const [source, setSource] = React.useState();
   const [stock, setStock] = React.useState("");
   const [update, setUpdate] = React.useState(false);
+  const [add, setAdd] = React.useState(false);
+  const [showComment, setShowComment] = React.useState(false);
   const [id, setId] = React.useState();
 
   const onSelectFIle = (event) => {
@@ -26,30 +30,44 @@ const LiveStock = () => {
     setSource(URL.createObjectURL(event.target.files?.[0]));
   };
 
+  const exitComment = (event) => {
+    setShowComment(false);
+    setComment(null);
+  };
+
+  const fetchComments = (event, id) => {
+    axios
+      .get(`http://localhost:8080/comment/retrieveByAnimal/${id}`)
+      .then((response) => {
+        setComment(response.data);
+        setShowComment(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    event.preventDefault();
+  };
+
   const updateAnimal = (event) => {
     const formData = new FormData();
-    // formData.append("user_id", user_id);
-    // formData.append("animal_name", animalName);
-    // formData.append("animal_type", animalType);
-    // formData.append("animal_detail", animalDetail);
-    // formData.append("stock", stock);
+    formData.append("user_id", user_id);
+    formData.append("animal_name", animalName);
+    formData.append("animal_type", animalType);
+    formData.append("animal_detail", animalDetail);
+    formData.append("animal_price", price);
+    formData.append("stock", stock);
     formData.append("image", animaPhoto);
-    console.log(formData);
     axios
-      .post("http://localhost:3000/animal/insertAnimal", formData, {
+      .put(`http://localhost:8080/animal/updateAnimal/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-        },
-        data: {
-          user_id: user_id,
-          animal_name: animalName,
-          animal_type: animalType,
-          animal_detail: animalDetail,
-          stock: stock,
         },
       })
       .then((response) => {
         console.log(response);
+        setUpdate(false);
+        fetchAnimal();
       })
       .catch((error) => {
         console.error(error);
@@ -58,6 +76,7 @@ const LiveStock = () => {
   };
 
   const onFetchAnimalById = (id) => {
+    setUpdate(true);
     axios
       .get(`http://localhost:8080/animal/retrieveById/${id}`)
       .then((response) => {
@@ -65,8 +84,8 @@ const LiveStock = () => {
         setAnimalType(response.data[0].livestock_animal_type);
         setAnimalDetail(response.data[0].livestock_animal_detail);
         setAnimalPhoto(response.data[0].livestock_animal_photo);
+        setPrice(response.data[0].livestock_animal_price);
         setStock(response.data[0].livestock_animal_stock);
-        setUpdate(true);
         setId(id);
         console.log(response.data);
       })
@@ -94,6 +113,7 @@ const LiveStock = () => {
     formData.append("animal_name", animalName);
     formData.append("animal_type", animalType);
     formData.append("animal_detail", animalDetail);
+    formData.append("price", price);
     formData.append("stock", stock);
     formData.append("image", animaPhoto);
     console.log(formData);
@@ -105,6 +125,7 @@ const LiveStock = () => {
       })
       .then((response) => {
         console.log(response);
+        fetchAnimal();
       })
       .catch((error) => {
         console.error(error);
@@ -126,178 +147,259 @@ const LiveStock = () => {
 
   React.useEffect(() => {
     fetchAnimal();
-    $(document).ready(function () {
-      $("#example").DataTable();
-    });
   }, []);
+
+  React.useEffect(() => {
+    if (animal.length > 0) {
+      $("#example").DataTable();
+    }
+  }, [animal]);
 
   return (
     <>
       <Navbar />
-      <div class="container">
+      <div className="container">
         <div
-          class="row header"
+          className="row header"
           style={{ textAlign: "center", fontWeight: "bolder" }}
         >
           <h3>ANIMAL LISTS OF PRODUCTS</h3>
-          <div
-            style={{
-              textAlign: "left",
-              padding: "10px",
-            }}
-          >
+          <div style={{ textAlign: "left", padding: "10px" }}>
             <button
               style={{ border: "none", borderRadius: "5px", padding: "15px" }}
+              onClick={(event) => setAdd(true)}
             >
               Add New Animal <FaPlusSquare />
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              Launch demo modal
             </button>
           </div>
         </div>
         <div>
-          Adding Live Stocks
-          <div
-            class="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">
-                    Modal title
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">...</div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button type="button" class="btn btn-primary">
-                    Save changes
-                  </button>
+          {showComment ? (
+            <div className="row d-flex justify-content-center mt-100 mb-100">
+              <div className="col-lg-6">
+                <div className="card">
+                  <div>
+                    <button
+                      className="my-2 mx-auto btn btn-dark"
+                      onClick={(event) => exitComment(event)}
+                    >
+                      Exit
+                    </button>
+                  </div>
+                  <div className="card-body text-center">
+                    {comment.length === 0 ? (
+                      <h4 className="card-title">No Comments</h4>
+                    ) : (
+                      <h4 className="card-title">Latest Comments</h4>
+                    )}
+                  </div>
+                  <div className="comment-widgets">
+                    {comment &&
+                      comment?.map((data) => {
+                        return (
+                          <div className="d-flex flex-row comment-row m-t-0">
+                            <div className="p-2">
+                              <img
+                                src="https://i.imgur.com/Ur43esv.jpg"
+                                alt="user"
+                                width="50"
+                                className="rounded-circle"
+                              />
+                            </div>
+                            <div className="comment-text w-100">
+                              <h6 className="font-medium">
+                                {data.first_name} {data.last_name}
+                              </h6>{" "}
+                              <span className="m-b-15 d-block">
+                                {data.comment_message}{" "}
+                              </span>
+                              <div className="comment-footer">
+                                {" "}
+                                <span className="text-muted float-right">
+                                  {new Date(data.created_at).toLocaleString()}
+                                </span>{" "}
+                                <button
+                                  type="button"
+                                  className="btn btn-danger btn-sm"
+                                >
+                                  Delete
+                                </button>{" "}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row my-4 h-100">
-            <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-              <form onSubmit={!update ? addAnimal : updateAnimal}>
-                <div class="form my-3">
-                  <label for="Email">Animal Name</label>
-                  <input
-                    required
-                    type="text"
-                    class="form-control"
-                    id="animalName"
-                    placeholder="Enter Animal Name"
-                    defaultValue={animalName}
-                    onChange={(event) => setAnimalName(event.target.value)}
-                  />
+          ) : null}
+        </div>
+        <div>
+          {add || update ? (
+            <div>
+              Adding Live Stocks
+              <div className="row my-4 h-100">
+                <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
+                  <form onSubmit={!update ? addAnimal : updateAnimal}>
+                    <div className="form my-3">
+                      <label htmlFor="Email">Animal Name</label>
+                      <input
+                        required
+                        type="text"
+                        className="form-control"
+                        id="animalName"
+                        placeholder="Enter Animal Name"
+                        defaultValue={animalName}
+                        onChange={(event) => setAnimalName(event.target.value)}
+                      />
+                    </div>
+                    <div className="form my-3">
+                      <label htmlFor="Email">Animal Type</label>
+                      <select
+                        style={{ 
+                          width: '100%',
+                          height: '40px',
+                          borderRadius: '8px'
+                         }}
+                        id="type"
+                        onChange={(event) => setAnimalType(event.target.value)}
+                        value={animalType}
+                      >
+                        <option value="">Select a Type</option>
+                        <option value="Domestic">Domestic</option>
+                        <option value="Mammals">Mammals</option>
+                        <option value="Birds">Birds</option>
+                        <option value="Reptiles">Reptiles</option>
+                        <option value="Amphibians">Amphibians</option>
+                        <option value="Fish">Fish</option>
+                        <option value="Insects">Insects</option>
+                        <option value="Arachnids">Arachnids</option>
+                        <option value="Mollusks">Mollusks</option>
+                        <option value="Crustaceans">Crustaceans</option>
+                        <option value="Echinoderms">Echinoderms</option>
+                      </select>
+                      {/* <input
+                        type="text"
+                        className="form-control"
+                        id="animalType"
+                        placeholder="Enter Animal Type"
+                        defaultValue={animalType}
+                        onChange={(event) => setAnimalType(event.target.value)}
+                      /> */}
+                    </div>
+                    <div className="form my-3">
+                      <label htmlFor="Email">Animal Description</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="animalDetails"
+                        placeholder="Enter Animal Details"
+                        defaultValue={animalDetail}
+                        onChange={(event) =>
+                          setAnimalDetail(event.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="form my-3">
+                      <label htmlFor="Name">Photo</label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="animalPhoto"
+                        placeholder="Enter Animal Photo"
+                        defaultValue={animaPhoto}
+                        onChange={(event) => onSelectFIle(event)}
+                      />
+                    </div>
+                    <div
+                      className="form my-3"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {source ? (
+                        <img src={source} width={"50%"} alt="Anima Photo" />
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div className="form my-3">
+                      <label htmlFor="Name">Animal Price</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="stocks"
+                        placeholder="Enter Number of Stocks"
+                        defaultValue={price}
+                        onChange={(event) => setPrice(event.target.value)}
+                      />
+                    </div>
+                    <div className="form my-3">
+                      <label htmlFor="Name">Stocks</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="stocks"
+                        placeholder="Enter Number of Stocks"
+                        defaultValue={stock}
+                        onChange={(event) => setStock(event.target.value)}
+                      />
+                    </div>
+                    <div className="text-center">
+                      {update ? (
+                        <>
+                          <button
+                            className="my-2 mx-auto btn btn-dark m-1"
+                            onClick={() => setUpdate(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="my-2 mx-auto btn btn-dark m-1"
+                            type="submit"
+                          >
+                            Update Livestock
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="my-2 mx-auto btn btn-dark m-1"
+                            onClick={() => setAdd(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="my-2 mx-auto btn btn-dark m-1"
+                            type="submit"
+                          >
+                            Add new Livestock
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </form>
                 </div>
-                <div class="form my-3">
-                  <label for="Email">Animal Type</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="animalType"
-                    placeholder="Enter Animal Type"
-                    defaultValue={animalType}
-                    onChange={(event) => setAnimalType(event.target.value)}
-                  />
-                </div>
-                <div class="form my-3">
-                  <label for="Email">Animal Description</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="animalDetails"
-                    placeholder="Enter Animal Details"
-                    defaultValue={animalDetail}
-                    onChange={(event) => setAnimalDetail(event.target.value)}
-                  />
-                </div>
-                <div class="form my-3">
-                  <label for="Name">Photo</label>
-                  <input
-                    type="file"
-                    class="form-control"
-                    id="animalPhoto"
-                    placeholder="Enter Animal Photo"
-                    defaultValue={animaPhoto}
-                    onChange={(event) => onSelectFIle(event)}
-                  />
-                </div>
-                <div
-                  class="form my-3"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {source ? (
-                    <img src={source} width={"50%"} alt="Anima Photo" />
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <div class="form my-3">
-                  <label for="Name">Stocks</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="stocks"
-                    placeholder="Enter Number of Stocks"
-                    defaultValue={stock}
-                    onChange={(event) => setStock(event.target.value)}
-                  />
-                </div>
-                <div className="text-center">
-                  {update ? (
-                    <button class="my-2 mx-auto btn btn-dark" type="submit">
-                      Update Livestock
-                    </button>
-                  ) : (
-                    <button class="my-2 mx-auto btn btn-dark" type="submit">
-                      Add new Livestock
-                    </button>
-                  )}
-                </div>
-              </form>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
         <table
           id="example"
-          class="table table-striped table-bordered"
+          className="table table-striped table-bordered"
           style={{ width: "100%" }}
         >
           <thead>
             <tr>
+              <th>Animal ID</th>
               <th>Animal Name</th>
               <th>Animal Type</th>
               <th>Description</th>
-              <th>Anime Photo</th>
+              <th>Animal Photo</th>
+              <th>Price</th>
               <th>Stocks</th>
               <th>Action</th>
             </tr>
@@ -305,6 +407,7 @@ const LiveStock = () => {
           <tbody>
             {animal?.map((animal) => (
               <tr key={animal.id}>
+                <td>{animal.livestock_animal_id}</td>
                 <td>{animal.livestock_animal_name}</td>
                 <td>{animal.livestock_animal_type}</td>
                 <td>{animal.livestock_animal_detail}</td>
@@ -321,13 +424,9 @@ const LiveStock = () => {
                     width={"50%"}
                   />
                 </td>
+                <td>₱{animal.livestock_animal_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 <td>{animal.livestock_animal_stock}</td>
-                <td
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                  }}
-                >
+                <td style={{ textAlign: "center" }}>
                   <FaEdit
                     style={{
                       cursor: "pointer",
@@ -344,12 +443,21 @@ const LiveStock = () => {
                       deleteAnimal(event, animal.livestock_animal_id)
                     }
                   />
+                  <FaCommentAlt
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    onClick={(event) => {
+                      fetchComments(event, animal.livestock_animal_id);
+                    }}
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
+              <th>Animal ID</th>
               <th>Animal Name</th>
               <th>Animal Type</th>
               <th>Description</th>

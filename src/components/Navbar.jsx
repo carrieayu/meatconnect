@@ -78,6 +78,11 @@ const Navbar = () => {
                         </NavLink>
                       </li>
                       <li>
+                        <NavLink className="dropdown-item" to="/cart">
+                          My Cart
+                        </NavLink>
+                      </li>
+                      <li>
                         <NavLink className="dropdown-item" to="/livestocks">
                           Live stocks
                         </NavLink>

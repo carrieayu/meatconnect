@@ -1,113 +1,78 @@
-.container{
-    margin-top:100px;
+@import url(http://fonts.googleapis.com/css?family=Calibri:400,300,700);
+
+.mt-100{
+    margin-top: 100px
 }
-
-.modal-open .modal {
-    overflow-x: hidden;
-    overflow-y: auto;
+.mb-100{
+    margin-bottom:100px
 }
-
-.modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1050;
-    display: none;
-    overflow: hidden;
-    outline: 0;
-}
-
-.fade {
-    transition: opacity 0.15s linear;
-}
-
-
-.modal-dialog {
+.card{
     position: relative;
-    width: auto;
-   
-    pointer-events: none;
-}
-
-
-.modal-content {
-    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
-    width: 100%;
-    pointer-events: auto;
-    background-color: #ffffff;
-    background-clip: padding-box;
-    border: 1px solid #f3f3f3;
-    border-radius: 0.3rem;
-    outline: 0;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0px solid transparent;
+    border-radius: 0px
 }
-
-.modal .modal-dialog .modal-content .modal-header {
-    padding: 25px 26px;
-}
-
-.modal-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid #f3f3f3;
-    border-top-left-radius: 0.3rem;
-    border-top-right-radius: 0.3rem;
-}
-
-.modal-body {
-    position: relative;
+.card-body{
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
     flex: 1 1 auto;
-    padding: 15px;
+    padding: 1.25rem
 }
-
-.form-group {
-    margin-bottom: 1.5rem;
+.card .card-title{
+    position: relative;
+    font-weight: 600;
+    margin-bottom: 10px
 }
-
-.form-group label {
-    font-size: 0.875rem;
-    line-height: 1.4rem;
-    vertical-align: top;
-    margin-bottom: .5rem;
+.comment-widgets{
+    position: relative;
+    margin-bottom: 10px
 }
-
-.col-form-label {
-    padding-top: calc(0.875rem + 1px);
-    padding-bottom: calc(0.875rem + 1px);
-    margin-bottom: 0;
-    font-size: inherit;
-    line-height: 1;
-}
-
-.form-control{
-    border: 1px solid #f3f3f3;
-    font-weight: 400;
-    font-size: 0.875rem;
-        box-shadow: none;
-    outline: 0;
-}
-
-.modal-footer {
+.comment-widgets .comment-row{
+    border-bottom: 1px solid transparent;
+    padding: 14px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 15px;
-    border-top: 1px solid #f3f3f3;
+    margin: 10px 0
 }
-
-.modal .modal-dialog .modal-content .modal-footer {
-    padding: 15px 31px;
+.p-2{
+    padding: 0.5rem !important
 }
-
-.btn {
-    font-size: 0.875rem;
-    line-height: 1;
-    font-weight: 400;
-    padding: .7rem 1.5rem;
-    border-radius: 0.1275rem;
+.comment-text{
+    padding-left: 15px
+}
+.w-100{
+    width: 100% !important
+}
+.m-b-15{
+    margin-bottom: 15px
+}
+.btn-sm{
+    padding: 0.25rem 0.5rem;
+    font-size: 0.76563rem;
+    line-height: 1.5;
+    border-radius: 1px
+}
+.btn-cyan{
+    color: #fff;
+    background-color: #27a9e3;
+    border-color: #27a9e3
+}
+.btn-cyan:hover{
+    color: #fff;
+    background-color: #1a93ca;
+    border-color: #198bbe
+}
+.comment-widgets .comment-row:hover{
+    background: rgba(0, 0, 0, 0.05)
 }

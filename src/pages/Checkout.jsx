@@ -2,8 +2,37 @@ import React from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 const Checkout = () => {
-  const state = useSelector((state) => state.handleCart);
+  const user_id = localStorage.getItem("id");
+  const [state, setState] = React.useState([]);
+  const [cod, setCod] = React.useState(false);
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [addrOne, setAddrOne] = React.useState("");
+  const [addrTwo, setAddrTwo] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [country, setCountry] = React.useState("");
+  const [countryState, setCountryState] = React.useState("");
+  const [zip, setZip] = React.useState("");
+
+  const getCart = () => {
+    axios
+      .get(`http://localhost:8080/cart/retrieveAll/${user_id}`)
+      .then((response) => {
+        console.log(response);
+        setState(response.data.animals);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  React.useEffect(() => {
+    getCart();
+  }, []);
 
   const EmptyCart = () => {
     return (
@@ -25,11 +54,11 @@ const Checkout = () => {
     let shipping = 30.0;
     let totalItems = 0;
     state.map((item) => {
-      return (subtotal += item.price * item.qty);
+      return (subtotal += item.livestock_animal_price * item.quantity);
     });
 
     state.map((item) => {
-      return (totalItems += item.qty);
+      return (totalItems += item.quantity);
     });
     return (
       <>
@@ -43,7 +72,13 @@ const Checkout = () => {
                 <div className="card-body">
                   <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                      Products ({totalItems})<span>${Math.round(subtotal)}</span>
+                      Products ({state.length})
+                      <span>
+                        $
+                        {Math.round(subtotal)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      </span>
                     </li>
                     <li className="list-group-item d-flex justify-content-between align-items-center px-0">
                       Shipping
@@ -54,7 +89,12 @@ const Checkout = () => {
                         <strong>Total amount</strong>
                       </div>
                       <span>
-                        <strong>${Math.round(subtotal + shipping)}</strong>
+                        <strong>
+                          $
+                          {Math.round(subtotal + shipping)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        </strong>
                       </span>
                     </li>
                   </ul>
@@ -149,6 +189,18 @@ const Checkout = () => {
                         />
                       </div>
 
+                      <div className="col-12">
+                        <label for="address2" className="form-label">
+                          Phone Number{" "}
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="address2"
+                          placeholder="Apartment or suite"
+                        />
+                      </div>
+
                       <div className="col-md-5 my-1">
                         <label for="country" className="form-label">
                           Country
@@ -198,80 +250,103 @@ const Checkout = () => {
 
                     <h4 className="mb-3">Payment</h4>
 
+                    <div className="form-check mb-3">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="exampleCheck"
+                        checked={cod}
+                        onChange={(event) => setCod(event.target.checked)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="exampleCheck"
+                      >
+                        Cash On Delivery
+                      </label>
+                    </div>
+
                     <div className="row gy-3">
-                      <div className="col-md-6">
-                        <label for="cc-name" className="form-label">
-                          Name on card
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="cc-name"
-                          placeholder=""
-                          required
-                        />
-                        <small className="text-muted">
-                          Full name as displayed on card
-                        </small>
-                        <div className="invalid-feedback">
-                          Name on card is required
-                        </div>
-                      </div>
+                      {cod ? (
+                        ""
+                      ) : (
+                        <>
+                          <div className="col-md-6">
+                            <label for="cc-name" className="form-label">
+                              Name on card
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="cc-name"
+                              placeholder=""
+                              required
+                            />
+                            <small className="text-muted">
+                              Full name as displayed on card
+                            </small>
+                            <div className="invalid-feedback">
+                              Name on card is required
+                            </div>
+                          </div>
 
-                      <div className="col-md-6">
-                        <label for="cc-number" className="form-label">
-                          Credit card number
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="cc-number"
-                          placeholder=""
-                          required
-                        />
-                        <div className="invalid-feedback">
-                          Credit card number is required
-                        </div>
-                      </div>
+                          <div className="col-md-6">
+                            <label for="cc-number" className="form-label">
+                              Credit card number
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="cc-number"
+                              placeholder=""
+                              required
+                            />
+                            <div className="invalid-feedback">
+                              Credit card number is required
+                            </div>
+                          </div>
 
-                      <div className="col-md-3">
-                        <label for="cc-expiration" className="form-label">
-                          Expiration
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="cc-expiration"
-                          placeholder=""
-                          required
-                        />
-                        <div className="invalid-feedback">
-                          Expiration date required
-                        </div>
-                      </div>
+                          <div className="col-md-3">
+                            <label for="cc-expiration" className="form-label">
+                              Expiration
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="cc-expiration"
+                              placeholder=""
+                              required
+                            />
+                            <div className="invalid-feedback">
+                              Expiration date required
+                            </div>
+                          </div>
 
-                      <div className="col-md-3">
-                        <label for="cc-cvv" className="form-label">
-                          CVV
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="cc-cvv"
-                          placeholder=""
-                          required
-                        />
-                        <div className="invalid-feedback">
-                          Security code required
-                        </div>
-                      </div>
+                          <div className="col-md-3">
+                            <label for="cc-cvv" className="form-label">
+                              CVV
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="cc-cvv"
+                              placeholder=""
+                              required
+                            />
+                            <div className="invalid-feedback">
+                              Security code required
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     <hr className="my-4" />
 
                     <button
                       className="w-100 btn btn-primary "
-                      type="submit" disabled
+                      type="submit"
+                      disabled
                     >
                       Continue to checkout
                     </button>

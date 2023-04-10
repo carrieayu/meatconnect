@@ -3,10 +3,27 @@ import { Footer, Navbar } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { addCart, delCart } from "../redux/action";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Cart = () => {
-  const state = useSelector((state) => state.handleCart);
-  const dispatch = useDispatch();
+  const user_id = localStorage.getItem("id");
+  const [state, setState] = React.useState([]);
+
+  const getCart = () => {
+    axios
+      .get(`http://localhost:8080/cart/retrieveAll/${user_id}`)
+      .then((response) => {
+        console.log(response);
+        setState(response.data.animals);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  React.useEffect(() => {
+    getCart();
+  }, []);
 
   const EmptyCart = () => {
     return (
@@ -23,11 +40,33 @@ const Cart = () => {
     );
   };
 
-  const addItem = (product) => {
-    dispatch(addCart(product));
+  const addItem = (quantity, id) => {
+    axios
+      .put(`http://localhost:8080/update/cart/${user_id}`, {
+        livestock_animal_id: id,
+        quantity: quantity + 1,
+      })
+      .then((response) => {
+        console.log(response);
+        getCart();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
-  const removeItem = (product) => {
-    dispatch(delCart(product));
+  const removeItem = (quantity, id) => {
+    axios
+      .put(`http://localhost:8080/update/cart/${user_id}`, {
+        livestock_animal_id: id,
+        quantity: quantity - 1,
+      })
+      .then((response) => {
+        console.log(response);
+        getCart();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const ShowCart = () => {
@@ -35,11 +74,11 @@ const Cart = () => {
     let shipping = 30.0;
     let totalItems = 0;
     state.map((item) => {
-      return (subtotal += item.price * item.qty);
+      return (subtotal += item.livestock_animal_price * item.quantity);
     });
 
     state.map((item) => {
-      return (totalItems += item.qty);
+      return (totalItems += item.quantity);
     });
     return (
       <>
@@ -54,7 +93,7 @@ const Cart = () => {
                   <div className="card-body">
                     {state.map((item) => {
                       return (
-                        <div key={item.id}>
+                        <div key={item.livestock_animal_id}>
                           <div className="row d-flex align-items-center">
                             <div className="col-lg-3 col-md-12">
                               <div
@@ -62,9 +101,8 @@ const Cart = () => {
                                 data-mdb-ripple-color="light"
                               >
                                 <img
-                                  src={item.image}
-                                  // className="w-100"
-                                  alt={item.title}
+                                  src={`data:image/jpeg;base64,${item.livestock_animal_photo}`}
+                                  alt={item.livestock_animal_name}
                                   width={100}
                                   height={75}
                                 />
@@ -73,10 +111,10 @@ const Cart = () => {
 
                             <div className="col-lg-5 col-md-6">
                               <p>
-                                <strong>{item.title}</strong>
+                                <strong>{item.livestock_animal_name}</strong>
                               </p>
-                              {/* <p>Color: blue</p>
-                              <p>Size: M</p> */}
+                              <p>Type: {item.livestock_animal_type}</p>
+                              {/* <p>Size: M</p> */}
                             </div>
 
                             <div className="col-lg-4 col-md-6">
@@ -87,18 +125,24 @@ const Cart = () => {
                                 <button
                                   className="btn px-3"
                                   onClick={() => {
-                                    removeItem(item);
+                                    removeItem(
+                                      item.quantity,
+                                      item.livestock_animal_id
+                                    );
                                   }}
                                 >
                                   <i className="fas fa-minus"></i>
                                 </button>
 
-                                <p className="mx-5">{item.qty}</p>
+                                <p className="mx-5">{item.quantity}</p>
 
                                 <button
                                   className="btn px-3"
                                   onClick={() => {
-                                    addItem(item);
+                                    addItem(
+                                      item.quantity,
+                                      item.livestock_animal_id
+                                    );
                                   }}
                                 >
                                   <i className="fas fa-plus"></i>
@@ -107,8 +151,13 @@ const Cart = () => {
 
                               <p className="text-start text-md-center">
                                 <strong>
-                                  <span className="text-muted">{item.qty}</span>{" "}
-                                  x ${item.price}
+                                  <span className="text-muted">
+                                    {item.quantity}
+                                  </span>{" "}
+                                  x ₱
+                                  {item.livestock_animal_price
+                                    .toString()
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                 </strong>
                               </p>
                             </div>
@@ -129,7 +178,13 @@ const Cart = () => {
                   <div className="card-body">
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                        Products ({totalItems})<span>${Math.round(subtotal)}</span>
+                        Products ({totalItems})
+                        <span>
+                          $
+                          {Math.round(subtotal)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        </span>
                       </li>
                       <li className="list-group-item d-flex justify-content-between align-items-center px-0">
                         Shipping
@@ -140,7 +195,12 @@ const Cart = () => {
                           <strong>Total amount</strong>
                         </div>
                         <span>
-                          <strong>${Math.round(subtotal + shipping)}</strong>
+                          <strong>
+                            $
+                            {Math.round(subtotal + shipping)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                          </strong>
                         </span>
                       </li>
                     </ul>
