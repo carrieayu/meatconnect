@@ -1,22 +1,13 @@
 import React from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const user_id = localStorage.getItem("id");
   const [state, setState] = React.useState([]);
-  const [cod, setCod] = React.useState(false);
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [addrOne, setAddrOne] = React.useState("");
-  const [addrTwo, setAddrTwo] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [country, setCountry] = React.useState("");
-  const [countryState, setCountryState] = React.useState("");
-  const [zip, setZip] = React.useState("");
 
   const getCart = () => {
     axios
@@ -50,6 +41,153 @@ const Checkout = () => {
   };
 
   const ShowCheckout = () => {
+    const [cod, setCod] = React.useState(true);
+    const [formValues, setFormValues] = React.useState({
+      firstName: "",
+      lastName: "",
+      email: "",
+      addrOne: "",
+      addrTwo: "",
+      phone: "",
+      country: "",
+      countryState: "",
+      zip: "",
+      cardNumber: "",
+      cardName: "",
+      expDate: "",
+      cvv: "",
+    });
+
+    const handleOnChange = (event) => {
+      const { name, value } = event.target;
+      setFormValues((prevState) => ({ ...prevState, [name]: value }));
+    };
+
+    function generateRandomString() {
+      let result = "";
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const charactersLength = characters.length;
+      for (let i = 0; i < 5; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+      }
+      return result;
+    }
+
+    const onSubmit = (event) => {
+      //Insert into billing table
+
+      if (cod) {
+        axios
+          .post(`http://localhost:8080/payment/insertPayment`, {
+            payment_type: "Cash On Delivery",
+            card_number: "",
+            card_expiry_date: "",
+            card_full_name: "",
+            card_cvv: "",
+          })
+          .then((response) => {
+            axios
+              .post(`http://localhost:8080/billing/saveBilling/${user_id}`, {
+                payment_id: response.data[0].payment_id,
+                first_name: formValues.firstName,
+                last_name: formValues.lastName,
+                email: formValues.email,
+                address: formValues.addrOne,
+                addressTwo: formValues.addrTwo,
+                country: formValues.country,
+                state: formValues.countryState,
+                zip: formValues.zip,
+                phone: formValues.phone,
+              })
+              .then((response) => {
+                state?.map((data) => {
+                  let billing_id = response.data[0].billing_id;
+                  axios
+                    .post(`http://localhost:8080/order/insertOrder/${data.cart_id}`, {
+                      order_number: generateRandomString(),
+                      user_id: user_id,
+                      livestock_animal_id: data.livestock_animal_id,
+                      billing_id: billing_id,
+                      quantity: data.quantity,
+                      price: data.livestock_animal_price,
+                    })
+                    .then((response) => {
+                      console.log(response.data);
+                      navigate("/");
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        axios
+          .post(`http://localhost:8080/payment/insertPayment`, {
+            payment_type: "Credit Card",
+            card_number: formValues.cardNumber,
+            card_expiry_date: formValues.expDate,
+            card_full_name: formValues.cardName,
+            card_cvv: formValues.cvv,
+          })
+          .then((response) => {
+            axios
+              .post(`http://localhost:8080/billing/saveBilling/${user_id}`, {
+                payment_id: response.data[0].payment_id,
+                first_name: formValues.firstName,
+                last_name: formValues.lastName,
+                email: formValues.email,
+                address: formValues.addrOne,
+                addressTwo: formValues.addrTwo,
+                country: formValues.country,
+                state: formValues.countryState,
+                zip: formValues.zip,
+                phone: formValues.phone,
+              })
+              .then((response) => {
+                state?.map((data) => {
+                  let billing_id = response.data[0].billing_id;
+                  axios
+                    .post(
+                      `http://localhost:8080/order/insertOrder/${data.cart_id}`,
+                      {
+                        order_number: generateRandomString(),
+                        user_id: user_id,
+                        livestock_animal_id: data.livestock_animal_id,
+                        billing_id: billing_id,
+                        quantity: data.quantity,
+                        price: data.livestock_animal_price,
+                      }
+                    )
+                    .then((response) => {
+                      console.log(response.data);
+                      navigate("/");
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      event.preventDefault();
+    };
     let subtotal = 0;
     let shipping = 30.0;
     let totalItems = 0;
@@ -107,7 +245,7 @@ const Checkout = () => {
                   <h4 className="mb-0">Billing address</h4>
                 </div>
                 <div className="card-body">
-                  <form className="needs-validation" novalidate>
+                  <form className="needs-validation" onSubmit={onSubmit}>
                     <div className="row g-3">
                       <div className="col-sm-6 my-1">
                         <label for="firstName" className="form-label">
@@ -117,9 +255,10 @@ const Checkout = () => {
                           type="text"
                           className="form-control"
                           id="firstName"
-                          placeholder=""
-                          value=""
+                          name="firstName"
                           required
+                          value={formValues.firstName}
+                          onChange={handleOnChange}
                         />
                         <div className="invalid-feedback">
                           Valid first name is required.
@@ -134,9 +273,10 @@ const Checkout = () => {
                           type="text"
                           className="form-control"
                           id="lastName"
-                          placeholder=""
-                          value=""
+                          name="lastName"
                           required
+                          value={formValues.lastName}
+                          onChange={handleOnChange}
                         />
                         <div className="invalid-feedback">
                           Valid last name is required.
@@ -153,6 +293,9 @@ const Checkout = () => {
                           id="email"
                           placeholder="you@example.com"
                           required
+                          name="email"
+                          value={formValues.email}
+                          onChange={handleOnChange}
                         />
                         <div className="invalid-feedback">
                           Please enter a valid email address for shipping
@@ -170,6 +313,9 @@ const Checkout = () => {
                           id="address"
                           placeholder="1234 Main St"
                           required
+                          name="addrOne"
+                          value={formValues.addrOne}
+                          onChange={handleOnChange}
                         />
                         <div className="invalid-feedback">
                           Please enter your shipping address.
@@ -186,6 +332,9 @@ const Checkout = () => {
                           className="form-control"
                           id="address2"
                           placeholder="Apartment or suite"
+                          name="addrTwo"
+                          value={formValues.addrTwo}
+                          onChange={handleOnChange}
                         />
                       </div>
 
@@ -196,8 +345,11 @@ const Checkout = () => {
                         <input
                           type="text"
                           className="form-control"
-                          id="address2"
-                          placeholder="Apartment or suite"
+                          id="phone"
+                          placeholder="Enter a Valid Phone Number"
+                          name="phone"
+                          value={formValues.phone}
+                          onChange={handleOnChange}
                         />
                       </div>
 
@@ -206,28 +358,48 @@ const Checkout = () => {
                           Country
                         </label>
                         <br />
-                        <select className="form-select" id="country" required>
+                        <select
+                          className="form-select"
+                          id="country"
+                          required
+                          name="country"
+                          value={formValues.country}
+                          onChange={handleOnChange}
+                        >
                           <option value="">Choose...</option>
-                          <option>India</option>
+                          <option value="philippines">Philippines</option>
+                          <option value="japan">Japan</option>
+                          <option value="korea">Korea</option>
+                          <option value="china">China</option>
+                          <option value="singapore">Singapore</option>
+                          <option value="russia">Russia</option>
+                          <option value="usa">USA</option>
                         </select>
                         <div className="invalid-feedback">
                           Please select a valid country.
                         </div>
                       </div>
 
-                      <div className="col-md-4 my-1">
+                      {/* <div className="col-md-4 my-1">
                         <label for="state" className="form-label">
                           State
                         </label>
                         <br />
-                        <select className="form-select" id="state" required>
+                        <select
+                          className="form-select"
+                          id="state"
+                          required
+                          name="countryState"
+                          value={formValues.countryState}
+                          onChange={handleOnChange}
+                        >
                           <option value="">Choose...</option>
                           <option>Punjab</option>
                         </select>
                         <div className="invalid-feedback">
                           Please provide a valid state.
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="col-md-3 my-1">
                         <label for="zip" className="form-label">
@@ -239,6 +411,9 @@ const Checkout = () => {
                           id="zip"
                           placeholder=""
                           required
+                          name="zip"
+                          value={formValues.zip}
+                          onChange={handleOnChange}
                         />
                         <div className="invalid-feedback">
                           Zip code required.
@@ -281,6 +456,9 @@ const Checkout = () => {
                               id="cc-name"
                               placeholder=""
                               required
+                              name="cardName"
+                              value={formValues.cardName}
+                              onChange={handleOnChange}
                             />
                             <small className="text-muted">
                               Full name as displayed on card
@@ -300,6 +478,9 @@ const Checkout = () => {
                               id="cc-number"
                               placeholder=""
                               required
+                              name="cardNumber"
+                              value={formValues.cardNumber}
+                              onChange={handleOnChange}
                             />
                             <div className="invalid-feedback">
                               Credit card number is required
@@ -316,6 +497,9 @@ const Checkout = () => {
                               id="cc-expiration"
                               placeholder=""
                               required
+                              name="expDate"
+                              value={formValues.expDate}
+                              onChange={handleOnChange}
                             />
                             <div className="invalid-feedback">
                               Expiration date required
@@ -332,6 +516,9 @@ const Checkout = () => {
                               id="cc-cvv"
                               placeholder=""
                               required
+                              name="cvv"
+                              value={formValues.cvv}
+                              onChange={handleOnChange}
                             />
                             <div className="invalid-feedback">
                               Security code required
@@ -343,11 +530,7 @@ const Checkout = () => {
 
                     <hr className="my-4" />
 
-                    <button
-                      className="w-100 btn btn-primary "
-                      type="submit"
-                      disabled
-                    >
+                    <button className="w-100 btn btn-primary " type="submit">
                       Continue to checkout
                     </button>
                   </form>

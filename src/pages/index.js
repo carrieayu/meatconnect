@@ -9,5 +9,6 @@ export { default as Register } from "./Register";
 export { default as Checkout } from "./Checkout";
 export { default as Profile } from "./Profile";
 export { default as ChatPage } from "./Chat";
+export { default as UserProfile} from './UserProfile';
 export { default as LiveStock } from "./LiveStock";
 export { default as PageNotFound } from "./PageNotFound";

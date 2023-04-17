@@ -55,9 +55,9 @@ const Navbar = () => {
             </li>
           </ul>
           {isLoggedIn ? (
-            <div className="container-fluid">
-              <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul className="navbar-nav ms-auto">
+            <>
+              <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul className="navbar-nav ms-auto text-center">
                   <li className="nav-item dropdown">
                     <a
                       className="nav-link dropdown-toggle"
@@ -101,7 +101,7 @@ const Navbar = () => {
                   </li>
                 </ul>
               </div>
-            </div>
+            </>
           ) : (
             <div className="buttons text-center">
               <NavLink to="/login" className="btn btn-outline-dark m-2">

@@ -21,6 +21,7 @@ import {
   Profile,
   ChatPage,
   LiveStock,
+  UserProfile
 } from "./pages";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -40,6 +41,7 @@ root.render(
         <Route path="/profile" element={<Profile />} />
         <Route path="/message" element={<ChatPage />} />
         <Route path="/livestocks" element={<LiveStock />} />
+        <Route path="/UserProfile/:id" element={<UserProfile />}/>
         <Route path="*" element={<PageNotFound />} />
         <Route path="/product/*" element={<PageNotFound />} />
       </Routes>

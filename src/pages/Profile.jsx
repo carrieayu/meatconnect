@@ -2,8 +2,10 @@ import React from "react";
 import { Footer, Navbar } from "../components";
 import "../assets/css/profile.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [firstName, setFirsName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -32,6 +34,28 @@ const Profile = () => {
         console.error(error);
         event.preventDefault();
       });
+  };
+
+  const onDeleteAccnt = (event) => {
+    const confirmed = window.confirm("Are you sure you want to Delete/Deactivate your Account?");
+    if(confirmed){
+      axios
+        .put(
+          `http://localhost:8080/user/deactivate/${localStorage.getItem("id")}`
+        )
+        .then((response) => {
+          console.log(response);
+          localStorage.clear();
+          alert("Account Deleted Successfully");
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }else{
+      
+    }
+    event.preventDefault();
   };
 
   const onSubmit = (event) => {
@@ -212,11 +236,18 @@ const Profile = () => {
         </div>
         <div class="mt-5 text-center">
           <button
-            class="btn btn-primary profile-button"
+            class="btn btn-primary profile-button mr-4"
             type="button"
             onClick={onSubmit}
           >
             Update Profile
+          </button>
+          <button
+            class="btn btn-primary profile-button"
+            type="button"
+            onClick={onDeleteAccnt}
+          >
+            Deactivate Account / Delete Account
           </button>
         </div>
       </div>

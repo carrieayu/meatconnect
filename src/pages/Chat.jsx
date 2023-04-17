@@ -12,6 +12,30 @@ const ChatPage = () => {
   const [from, setFrom] = React.useState(null);
   const [to, setTo] = React.useState(null);
   const [data, setData] = React.useState([]);
+  const [timer, setTimer] = React.useState(null);
+
+  const handleMouseDown = () => {
+    setTimer(setTimeout(() => {}, 1000)); // 1000 milliseconds = 1 second
+  };
+
+  const handleMouseUp = (event, id) => {
+    clearTimeout(timer);
+    const res = window.confirm("Do you want to delete this Message!!");
+    if (res) {
+      axios
+        .delete(`http://localhost:8080/chat/deleteChat/${id}`)
+        .then((response) => {
+          console.log(response);
+          alert("Message Deleted Successfully!!");
+          setSelectedChat(null);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    event.preventDefault();
+  };
 
   const onSentMessage = () => {
     setChatMessage("");
@@ -77,7 +101,13 @@ const ChatPage = () => {
                 sortedChat?.map((data) => {
                   if (data.receiver_id != user_id) {
                     rowList.push(
-                      <div class="outgoing_msg">
+                      <div
+                        class="outgoing_msg"
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={(event) =>
+                          handleMouseUp(event, data.message_id)
+                        }
+                      >
                         <div class="sent_msg">
                           <p>{data.message_chat}</p>
                           <span class="time_date">
@@ -88,7 +118,13 @@ const ChatPage = () => {
                     );
                   } else {
                     rowList.push(
-                      <div class="incoming_msg">
+                      <div
+                        class="incoming_msg"
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={(event) =>
+                          handleMouseUp(event, data.message_id)
+                        }
+                      >
                         <div class="incoming_msg_img">
                           {" "}
                           <img
