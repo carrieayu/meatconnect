@@ -141,6 +141,20 @@ const Product = () => {
           event.preventDefault();
         }
       } else {
+        if (rating) {
+          axios
+            .post(`http://localhost:8080/insert/userRating/${user_id}`, {
+              livestock_animal_id: id,
+              rating: rating,
+            })
+            .then((response) => {
+              alert("Rating Submitted");
+              event.preventDefault();
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
         axios
           .post(`http://localhost:8080/comment/addComment/${user_id}`, {
             message: message,

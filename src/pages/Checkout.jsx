@@ -106,16 +106,20 @@ const Checkout = () => {
                 state?.map((data) => {
                   let billing_id = response.data[0].billing_id;
                   axios
-                    .post(`http://localhost:8080/order/insertOrder/${data.cart_id}`, {
-                      order_number: generateRandomString(),
-                      user_id: user_id,
-                      livestock_animal_id: data.livestock_animal_id,
-                      billing_id: billing_id,
-                      quantity: data.quantity,
-                      price: data.livestock_animal_price,
-                    })
+                    .post(
+                      `http://localhost:8080/order/insertOrder/${data.cart_id}`,
+                      {
+                        order_number: generateRandomString(),
+                        user_id: user_id,
+                        livestock_animal_id: data.livestock_animal_id,
+                        billing_id: billing_id,
+                        quantity: data.quantity,
+                        price: data.livestock_animal_price,
+                      }
+                    )
                     .then((response) => {
                       console.log(response.data);
+                      alert("Item Ordered Successfully!!");
                       navigate("/");
                     })
                     .catch((error) => {

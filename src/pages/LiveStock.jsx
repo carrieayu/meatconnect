@@ -25,6 +25,21 @@ const LiveStock = () => {
   const [showComment, setShowComment] = React.useState(false);
   const [id, setId] = React.useState();
 
+  const onDeleteComment = (event, id) => {
+    axios
+      .delete(`http://localhost:8080/comment/deleteComment/${id}`)
+      .then((response) => {
+        console.log(response);
+        alert("Comment Deleted Successfully");
+        setShowComment(false);
+        setComment(null);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    event.preventDefault();
+  };
+
   const onSelectFIle = (event) => {
     setAnimalPhoto(event.target.files?.[0]);
     setSource(URL.createObjectURL(event.target.files?.[0]));
@@ -125,6 +140,7 @@ const LiveStock = () => {
       })
       .then((response) => {
         console.log(response);
+        setAdd(false);
         fetchAnimal();
       })
       .catch((error) => {
@@ -221,6 +237,9 @@ const LiveStock = () => {
                                 <button
                                   type="button"
                                   className="btn btn-danger btn-sm"
+                                  onClick={(event) =>
+                                    onDeleteComment(event, data.comment_id)
+                                  }
                                 >
                                   Delete
                                 </button>{" "}
@@ -257,11 +276,11 @@ const LiveStock = () => {
                     <div className="form my-3">
                       <label htmlFor="Email">Animal Type</label>
                       <select
-                        style={{ 
-                          width: '100%',
-                          height: '40px',
-                          borderRadius: '8px'
-                         }}
+                        style={{
+                          width: "100%",
+                          height: "40px",
+                          borderRadius: "8px",
+                        }}
                         id="type"
                         onChange={(event) => setAnimalType(event.target.value)}
                         value={animalType}
@@ -387,86 +406,95 @@ const LiveStock = () => {
             </div>
           ) : null}
         </div>
-        <table
-          id="example"
-          className="table table-striped table-bordered"
-          style={{ width: "100%" }}
-        >
-          <thead>
-            <tr>
-              <th>Animal ID</th>
-              <th>Animal Name</th>
-              <th>Animal Type</th>
-              <th>Description</th>
-              <th>Animal Photo</th>
-              <th>Price</th>
-              <th>Stocks</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {animal?.map((animal) => (
-              <tr key={animal.id}>
-                <td>{animal.livestock_animal_id}</td>
-                <td>{animal.livestock_animal_name}</td>
-                <td>{animal.livestock_animal_type}</td>
-                <td>{animal.livestock_animal_detail}</td>
-                <td
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${animal.livestock_animal_photo}`}
-                    alt={animal.livestock_animal_name}
-                    width={"50%"}
-                  />
-                </td>
-                <td>₱{animal.livestock_animal_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                <td>{animal.livestock_animal_stock}</td>
-                <td style={{ textAlign: "center" }}>
-                  <FaEdit
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      onFetchAnimalById(animal.livestock_animal_id)
-                    }
-                  />
-                  <FaTrash
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    onClick={(event) =>
-                      deleteAnimal(event, animal.livestock_animal_id)
-                    }
-                  />
-                  <FaCommentAlt
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    onClick={(event) => {
-                      fetchComments(event, animal.livestock_animal_id);
-                    }}
-                  />
-                </td>
+        <div className="table-responsive">
+          <table
+            id="example"
+            className="table table-striped table-bordered"
+            style={{ width: "100%" }}
+          >
+            <thead>
+              <tr>
+                <th class="d-none d-md-table-cell">Animal ID</th>
+                <th>Animal Name</th>
+                <th class="d-none d-md-table-cell">Animal Type</th>
+                <th class="d-none d-md-table-cell">Description</th>
+                <th class="d-none d-md-table-cell">Animal Photo</th>
+                <th>Price</th>
+                <th>Stocks</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Animal ID</th>
-              <th>Animal Name</th>
-              <th>Animal Type</th>
-              <th>Description</th>
-              <th>Anime Photo</th>
-              <th>Stocks</th>
-              <th>Action</th>
-            </tr>
-          </tfoot>
-        </table>
+            </thead>
+            <tbody>
+              {animal?.map((animal) => (
+                <tr key={animal.id}>
+                  <td class="d-none d-md-table-cell">{animal.livestock_animal_id}</td>
+                  <td>{animal.livestock_animal_name}</td>
+                  <td class="d-none d-md-table-cell">{animal.livestock_animal_type}</td>
+                  <td class="d-none d-md-table-cell">{animal.livestock_animal_detail}</td>
+                  <td
+                  class="d-none d-md-table-cell"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <img
+                      src={`data:image/jpeg;base64,${animal.livestock_animal_photo}`}
+                      alt={animal.livestock_animal_name}
+                      width={"50%"}
+                    />
+                  </td>
+                  <td>
+                    ₱
+                    {animal.livestock_animal_price
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </td>
+                  <td>{animal.livestock_animal_stock}</td>
+                  <td style={{ textAlign: "center" }}>
+                    <FaEdit
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        onFetchAnimalById(animal.livestock_animal_id)
+                      }
+                    />
+                    <FaTrash
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={(event) =>
+                        deleteAnimal(event, animal.livestock_animal_id)
+                      }
+                    />
+                    <FaCommentAlt
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={(event) => {
+                        fetchComments(event, animal.livestock_animal_id);
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th class="d-none d-md-table-cell">Animal ID</th>
+                <th>Animal Name</th>
+                <th class="d-none d-md-table-cell">Animal Type</th>
+                <th class="d-none d-md-table-cell">Description</th>
+                <th class="d-none d-md-table-cell">Animal Photo</th>
+                <th>Price</th>
+                <th>Stocks</th>
+                <th>Action</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
       <Footer />
     </>
