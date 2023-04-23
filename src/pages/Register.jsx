@@ -48,7 +48,7 @@ const Register = () => {
       .then((response) => {
         alert("User Registered Successfully");
         navigate("/login");
-        console.log(response);
+      
       })
       .catch((error) => {
         console.error(error);

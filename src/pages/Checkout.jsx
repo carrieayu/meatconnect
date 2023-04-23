@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from 'react';
 import { Footer, Navbar } from "../components";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const Checkout = () => {
@@ -9,11 +8,15 @@ const Checkout = () => {
   const user_id = localStorage.getItem("id");
   const [state, setState] = React.useState([]);
 
+  const location = useLocation();
+  const qty = location.state.qty;
+  const item = location.state.item;
+
   const getCart = () => {
     axios
       .get(`http://localhost:8080/cart/retrieveAll/${user_id}`)
       .then((response) => {
-        console.log(response);
+      
         setState(response.data.animals);
       })
       .catch((error) => {
@@ -42,7 +45,7 @@ const Checkout = () => {
 
   const ShowCheckout = () => {
     const [cod, setCod] = React.useState(true);
-    const [formValues, setFormValues] = React.useState({
+    const [formValues, setFormValues] = useState({
       firstName: "",
       lastName: "",
       email: "",
@@ -118,7 +121,7 @@ const Checkout = () => {
                       }
                     )
                     .then((response) => {
-                      console.log(response.data);
+                  
                       alert("Item Ordered Successfully!!");
                       navigate("/");
                     })
@@ -173,7 +176,7 @@ const Checkout = () => {
                       }
                     )
                     .then((response) => {
-                      console.log(response.data);
+                    
                       navigate("/");
                     })
                     .catch((error) => {
@@ -195,13 +198,15 @@ const Checkout = () => {
     let subtotal = 0;
     let shipping = 30.0;
     let totalItems = 0;
-    state.map((item) => {
-      return (subtotal += item.livestock_animal_price * item.quantity);
-    });
+   
+    const totalPrice = state.reduce((prevItem, item, index) => {
+      return prevItem + item.livestock_animal_price * qty[index];
+    }, 0);
 
     state.map((item) => {
-      return (totalItems += item.quantity);
+      return (totalItems += qty);
     });
+
     return (
       <>
         <div className="container py-5">
@@ -214,13 +219,13 @@ const Checkout = () => {
                 <div className="card-body">
                   <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                      Products ({state.length})
-                      <span>
-                        $
-                        {Math.round(subtotal)
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      </span>
+                       Products ({item.length})
+                        {state.map((item,index) => {
+                          if(qty[index] !== 0)
+                          return(
+                            <><span>{item.livestock_animal_name}: {item.livestock_animal_price}({qty[index]})</span><br /></>
+                          )
+                        })}
                     </li>
                     <li className="list-group-item d-flex justify-content-between align-items-center px-0">
                       Shipping
@@ -233,9 +238,7 @@ const Checkout = () => {
                       <span>
                         <strong>
                           $
-                          {Math.round(subtotal + shipping)
-                            .toString()
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                          {totalPrice + shipping}
                         </strong>
                       </span>
                     </li>
@@ -347,7 +350,7 @@ const Checkout = () => {
                           Phone Number{" "}
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className="form-control"
                           id="phone"
                           placeholder="Enter a Valid Phone Number"

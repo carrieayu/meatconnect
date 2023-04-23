@@ -26,7 +26,7 @@ const Products = () => {
               quantity: 1,
             })
             .then((response) => {
-              console.log(response.data);
+          
               alert("Added to Card");
             })
             .catch((error) => {
@@ -39,7 +39,7 @@ const Products = () => {
               quantity: response.data[0].quantity + 1,
             })
             .then((response) => {
-              console.log(response);
+          
               alert("Added to Card");
             })
             .catch((error) => {
@@ -213,7 +213,7 @@ const Products = () => {
                   </ul>
                   <div className="card-body">
                     <Link
-                      to={"/product/" + animals.livestock_animal_id}
+                      to={`/product/${animals.livestock_animal_id}`}
                       className="btn btn-dark m-1"
                     >
                       Buy Now

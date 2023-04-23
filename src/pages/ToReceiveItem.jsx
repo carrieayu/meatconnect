@@ -2,7 +2,7 @@ import React from "react";
 import { Footer, Navbar } from "../components";
 import axios from "axios";
 
-const Order = () => {
+const ToReceiveItem = () => {
   const [order, setOrder] = React.useState([]);
 
   const fetchOrder = () => {
@@ -33,7 +33,7 @@ const Order = () => {
           class="row header"
           style={{ textAlign: "center", fontWeight: "bolder" }}
         >
-          <h3>List of orders</h3>
+          <h3>My purchases</h3>
         </div>
         <div class="row">
           <div class="col-md-8 mx-auto">
@@ -45,7 +45,7 @@ const Order = () => {
                   <th scope="col">Address</th>
                   <th scope="col">Total</th>
                   <th scope="col">Quantity</th>
-                  <th scope="col">Arrival</th>
+                  <th scope="col">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -57,8 +57,8 @@ const Order = () => {
                         <td>{data.livestock_animal_name}</td>
                         <td>{data.address}</td>
                         <td>{data.price * data.quantity}</td>
-                        <td>{data.arrived_date}</td>
                         <td>{data.quantity}</td>
+                        <td>{data.status}</td>
                       </tr>
                     );
                   })}
@@ -72,4 +72,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default ToReceiveItem;

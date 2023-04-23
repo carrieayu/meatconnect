@@ -29,7 +29,7 @@ const UserProfile = () => {
       })
       .then((response) => {
         alert("Rating Submitted Successfully!!!");
-        console.log(response);
+      
       })
       .catch((error) => {
         console.error(error);

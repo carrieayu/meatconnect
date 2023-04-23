@@ -25,7 +25,7 @@ const ChatPage = () => {
       axios
         .delete(`http://localhost:8080/chat/deleteChat/${id}`)
         .then((response) => {
-          console.log(response);
+       
           alert("Message Deleted Successfully!!");
           setSelectedChat(null);
         })
@@ -50,7 +50,7 @@ const ChatPage = () => {
     axios
       .post(`http://localhost:8080/chat/insert`, data)
       .then((response) => {
-        console.log(response.data);
+  
       })
       .catch((error) => {
         console.error(error);

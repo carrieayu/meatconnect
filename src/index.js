@@ -22,7 +22,8 @@ import {
   ChatPage,
   LiveStock,
   UserProfile,
-  Order
+  Order,
+  ToReceiveItem
 } from "./pages";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -38,12 +39,13 @@ root.render(
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout"  element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/message" element={<ChatPage />} />
         <Route path="/livestocks" element={<LiveStock />} />
         <Route path="/UserProfile/:id" element={<UserProfile />}/>
         <Route path="/orders" element={<Order />}/>
+        <Route path="/ToReceiveItem" element={<ToReceiveItem />}/>
         <Route path="*" element={<PageNotFound />} />
         <Route path="/product/*" element={<PageNotFound />} />
       </Routes>

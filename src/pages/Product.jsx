@@ -428,7 +428,7 @@ const Product = () => {
                   </ul>
                   <div className="card-body">
                     <Link
-                      to={"/product/" + item.id}
+                      to={`/product/${item.id}`}
                       className="btn btn-dark m-1"
                     >
                       Buy Now

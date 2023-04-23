@@ -21,7 +21,7 @@ const Profile = () => {
     axios
       .get(`http://localhost:8080/user/retrieve/${localStorage.getItem("id")}`)
       .then((response) => {
-        console.log(response);
+      
         if (event.target.value !== response.data[0].user_password) {
           setError("Password Does not Match");
           event.preventDefault();
@@ -44,7 +44,7 @@ const Profile = () => {
           `http://localhost:8080/user/deactivate/${localStorage.getItem("id")}`
         )
         .then((response) => {
-          console.log(response);
+        
           localStorage.clear();
           alert("Account Deleted Successfully");
           navigate("/");

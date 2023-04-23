@@ -44,11 +44,6 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/about">
-                About
-              </NavLink>
-            </li>
-            <li className="nav-item">
               <NavLink className="nav-link" to="/contact">
                 Contact
               </NavLink>
@@ -80,6 +75,11 @@ const Navbar = () => {
                       <li>
                         <NavLink className="dropdown-item" to="/orders">
                           My Orders
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink className="dropdown-item" to="/ToReceiveItem">
+                        My purchases
                         </NavLink>
                       </li>
                       <li>

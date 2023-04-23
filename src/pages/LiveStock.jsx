@@ -29,7 +29,7 @@ const LiveStock = () => {
     axios
       .delete(`http://localhost:8080/comment/deleteComment/${id}`)
       .then((response) => {
-        console.log(response);
+      
         alert("Comment Deleted Successfully");
         setShowComment(false);
         setComment(null);
@@ -80,7 +80,7 @@ const LiveStock = () => {
         },
       })
       .then((response) => {
-        console.log(response);
+      
         setUpdate(false);
         fetchAnimal();
       })
@@ -113,7 +113,7 @@ const LiveStock = () => {
     axios
       .delete(`http://localhost:8080/animal/deleteAnimal/${id}`)
       .then((response) => {
-        console.log(response);
+      
         fetchAnimal();
       })
       .catch((error) => {
@@ -139,7 +139,7 @@ const LiveStock = () => {
         },
       })
       .then((response) => {
-        console.log(response);
+      
         setAdd(false);
         fetchAnimal();
       })

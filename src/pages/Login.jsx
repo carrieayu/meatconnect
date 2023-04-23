@@ -16,7 +16,7 @@ const Login = () => {
         password: password,
       })
       .then((response) => {
-        console.log(response);
+      
         if (response.data === "Incorrect Username and/or Password") {
           setError("Incorrect Username and/or Password");
           return;
