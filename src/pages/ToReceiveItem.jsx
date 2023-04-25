@@ -31,6 +31,35 @@ const ToReceiveItem = () => {
    
   }
 
+  const nextAction = (order_id,status)=>{
+    axios
+    .put(
+      `http://localhost:8080/order/toShipStatus/${order_id}`,{
+        status: status
+      }
+    )
+    .then((response) => {
+      console.log(response.data)
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  const actionButton=(status,order_id)=>{
+    if(status === 'Pending'){
+      return (
+       <p className="">Waiting for seller response</p>
+      )
+    }
+    if(status === 'To ship'){
+      return (
+         <button onClick={()=>{nextAction(order_id,status)}} className="btn btn-danger">Item Recieved</button>
+      )
+    }
+
+  }
+
   React.useEffect(() => {
     fetchOrder();
   }, []);
@@ -72,7 +101,7 @@ const ToReceiveItem = () => {
                         <td>{data.price * data.quantity + 30}</td>
                         <td>{data.quantity}</td>
                         <td>{data.status}</td>
-                        <td>{getStatus(data.status)}</td>
+                        <td>{actionButton(data.status,data.order_id)}</td>
                       </tr>
                     );
                   })}
