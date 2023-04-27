@@ -10,24 +10,43 @@ const Login = () => {
   const [error, setError] = React.useState("");
 
   const onSubmit = (event) => {
-    axios
-      .post("http://localhost:8080/user/login", {
-        username: username,
-        password: password,
-      })
-      .then((response) => {
-      
-        if (response.data === "Incorrect Username and/or Password") {
-          setError("Incorrect Username and/or Password");
-          return;
-        }
-        localStorage.setItem("id", response.data[0].user_id);
-        setError("");
-        navigate('/');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (username === "admin" && password === "admin") {
+      axios
+        .post("http://localhost:8080/user/login", {
+          username: username,
+          password: password,
+        })
+        .then((response) => {
+          if (response.data === "Incorrect Username and/or Password") {
+            setError("Incorrect Username and/or Password");
+            return;
+          }
+          localStorage.setItem("id", response.data[0].user_id);
+          setError("");
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .post("http://localhost:8080/user/login", {
+          username: username,
+          password: password,
+        })
+        .then((response) => {
+          if (response.data === "Incorrect Username and/or Password") {
+            setError("Incorrect Username and/or Password");
+            return;
+          }
+          localStorage.setItem("id", response.data[0].user_id);
+          setError("");
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     event.preventDefault();
   };
   return (
@@ -61,7 +80,12 @@ const Login = () => {
               </div>
               <div class="my-3">
                 {error ? (
-                  <label for="floatingPassword display-4" style={{ color: "red" }}>*{error}*</label>
+                  <label
+                    for="floatingPassword display-4"
+                    style={{ color: "red" }}
+                  >
+                    *{error}*
+                  </label>
                 ) : (
                   ""
                 )}

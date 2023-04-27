@@ -23,7 +23,14 @@ import {
   LiveStock,
   UserProfile,
   Order,
-  ToReceiveItem
+  ToReceiveItem,
+  Dashboard,
+  AccountMgt,
+  PostMgt,
+  ChatMgt,
+  RatingFeedbacks,
+  NotificationMgt,
+  PurchaseHistory
 } from "./pages";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -39,13 +46,20 @@ root.render(
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/checkout"  element={<Checkout />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/message" element={<ChatPage />} />
         <Route path="/livestocks" element={<LiveStock />} />
-        <Route path="/UserProfile/:id" element={<UserProfile />}/>
-        <Route path="/orders" element={<Order />}/>
-        <Route path="/ToReceiveItem" element={<ToReceiveItem />}/>
+        <Route path="/UserProfile/:id" element={<UserProfile />} />
+        <Route path="/orders" element={<Order />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/AccountManagement" element={<AccountMgt />} />
+        <Route path="/PostManagement" element={<PostMgt />} />
+        <Route path="/ChatManagement" element={<ChatMgt />} />
+        <Route path="/RatingsAndFeedbacks" element={<RatingFeedbacks />} />
+        <Route path="/NotificationManagement" element={<NotificationMgt />} />
+        <Route path="/PurchaseHistory" element={<PurchaseHistory />} />
+        <Route path="/ToReceiveItem" element={<ToReceiveItem />} />
         <Route path="*" element={<PageNotFound />} />
         <Route path="/product/*" element={<PageNotFound />} />
       </Routes>
