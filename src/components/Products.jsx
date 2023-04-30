@@ -26,7 +26,6 @@ const Products = () => {
               quantity: 1,
             })
             .then((response) => {
-          
               alert("Added to Card");
             })
             .catch((error) => {
@@ -39,7 +38,6 @@ const Products = () => {
               quantity: response.data[0].quantity + 1,
             })
             .then((response) => {
-          
               alert("Added to Card");
             })
             .catch((error) => {
@@ -104,6 +102,7 @@ const Products = () => {
     );
     setFilter(updatedList);
   };
+
   const ShowProducts = () => {
     let productList = filter !== null ? filter : animal;
     return (
@@ -119,31 +118,31 @@ const Products = () => {
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => filterProduct("Domestic")}
           >
-            Domestic
+            Pigs
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => filterProduct("Mammals")}
           >
-            Mammals
+            Poultry
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => filterProduct("Birds")}
           >
-            Birds
+            Goats
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => filterProduct("Reptiles")}
           >
-            Reptiles
+            Cow
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => filterProduct("Amphibians")}
           >
-            Amphibians
+            Horses
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
@@ -155,25 +154,7 @@ const Products = () => {
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => filterProduct("Insects")}
           >
-            Insects
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Arachnids")}
-          >
-            Arachnids
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Crustaceans")}
-          >
-            Crustaceans
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Echinoderms")}
-          >
-            Echinoderms
+            Sheeps
           </button>
         </div>
 
@@ -197,10 +178,10 @@ const Products = () => {
                   />
                   <div className="card-body">
                     <h5 className="card-title">
-                      {animals.livestock_animal_name}...
+                      {animals.livestock_animal_name}
                     </h5>
                     <p className="card-text">
-                      {animals.livestock_animal_detail.substring(0, 90)}...
+                      {animals.livestock_animal_detail.substring(0, 90)}
                     </p>
                   </div>
                   <ul className="list-group list-group-flush">
@@ -210,13 +191,20 @@ const Products = () => {
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </li>
+                    <li className="list-group-item lead">
+                      Seller:{" "}
+                      <b>
+                        {animals.last_name}, {animals.first_name}
+                      </b>
+                    </li>
+                    <li className="list-group-item lead"></li>
                   </ul>
                   <div className="card-body">
                     <Link
                       to={`/product/${animals.livestock_animal_id}`}
                       className="btn btn-dark m-1"
                     >
-                      Buy Now
+                      View Details
                     </Link>
                     <button
                       className="btn btn-dark m-1"

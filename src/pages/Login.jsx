@@ -64,7 +64,7 @@ const Login = () => {
                   type="text"
                   class="form-control"
                   id="floatingInput"
-                  placeholder="username"
+                  placeholder="Email"
                   onChange={(event) => setUsername(event.target.value)}
                 />
               </div>

@@ -189,12 +189,16 @@ const Product = () => {
               />
             </div>
             <div className="col-md-6 col-md-6 py-5">
-              <h4 className="text-uppercase text-muted">
+              <h4 className="text-uppercase ">
+                <span className="text-muted">Livestock type : </span>{" "}
                 {product.livestock_animal_type}
               </h4>
-              <h1 className="display-5">{product.livestock_animal_name}</h1>
+              <h1 className="display-5">
+                <span className="text-muted">Livestock Name : </span>
+                {product.livestock_animal_name}
+              </h1>
               <p className="lead">
-                {/* {product.rating && product.rating.rate}{" "} */}
+                <span className="text-muted">Rate : </span>
                 {(function () {
                   let rowsList = [];
                   let total = 0;
@@ -202,7 +206,9 @@ const Product = () => {
                   prodRate?.map((data) => {
                     total += data.rating_star;
                   });
-
+                  if (total == 0) {
+                    return "No Rating Yet.";
+                  }
                   let TotalRate = total / prodRate.length;
 
                   for (let i = 0; i < Math.floor(TotalRate); i++) {
@@ -213,11 +219,16 @@ const Product = () => {
                 })()}
               </p>
               <h3 className="display-6  my-4">
-                ${product.livestock_animal_price}
+                <span className="text-muted">Price : </span> $
+                {product.livestock_animal_price}
               </h3>
-              <p className="lead">{product.livestock_animal_detail}</p>
               <p className="lead">
-                Owner:
+                {" "}
+                <span className="text-muted">Details : </span>
+                {product.livestock_animal_detail}
+              </p>
+              <p className="lead">
+                <span className="text-muted">Seller : </span>
                 <Link to={"/UserProfile/" + user.user_id}>
                   {" "}
                   {user.user_email}
@@ -448,14 +459,6 @@ const Product = () => {
       <Navbar />
       <div className="container">
         <div className="row">{loading ? <Loading /> : <ShowProduct />}</div>
-        <div className="row my-5 py-5">
-          <div className="d-md-block">
-            <h2 className="">You may also Like</h2>
-            <Marquee pauseOnHover={true} pauseOnClick={true} speed={50}>
-              {loading2 ? <Loading2 /> : <ShowSimilarProduct />}
-            </Marquee>
-          </div>
-        </div>
       </div>
       <Footer />
     </>

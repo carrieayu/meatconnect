@@ -3,7 +3,7 @@ import { Footer, Navbar } from "../components";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Register = () => {
+const Admin = () => {
   const navigate = useNavigate();
 
   const [firstName, setFirstName] = React.useState("");
@@ -16,6 +16,9 @@ const Register = () => {
   const [confirmPass, setConfirmPass] = React.useState("");
   const [error, setError] = React.useState("");
 
+  if (localStorage.getItem() === "admin@gmail.com") {
+    navigate("/");
+  }
   const onSubmit = (event) => {
     if (password !== confirmPass) {
       setError("Password does not match");
@@ -107,7 +110,7 @@ const Register = () => {
                   type="text"
                   class="form-control"
                   id="address"
-                  placeholder="Enter Your Address"
+                  placeholder="Enter Your Name"
                   onChange={(event) => {
                     setAddress(event.target.value);
                   }}
@@ -119,7 +122,7 @@ const Register = () => {
                   type="text"
                   class="form-control"
                   id="username"
-                  placeholder="Enter Your Username"
+                  placeholder="Enter Your Name"
                   onChange={(event) => {
                     setUsername(event.target.value);
                   }}
@@ -131,7 +134,7 @@ const Register = () => {
                   type="text"
                   class="form-control"
                   id="contact"
-                  placeholder="091234671212"
+                  placeholder="Enter Your Name"
                   onChange={(event) => {
                     setContacts(event.target.value);
                   }}
@@ -189,4 +192,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Admin;
