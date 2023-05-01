@@ -11,6 +11,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [notification, setNotification] = useState([]);
   const [user, setUser] = useState([]);
+  const [selectedFileUrl, setSelectedFileUrl] = React.useState("");
 
   const isLoggedIn = !!localStorage.getItem("id");
 
@@ -20,9 +21,9 @@ const Navbar = () => {
   };
   const getUser = () => {
     axios
-      .get(`http://localhost:8080/getUserByID/${localStorage.getItem("id")}`)
+      .get(`http://localhost:8080/user/retrieve/${localStorage.getItem("id")}`)
       .then((response) => {
-        setUser(response.data);
+        setSelectedFileUrl(response.data.user[0].user_photo);
       })
       .catch((error) => {
         console.error(error);
@@ -57,6 +58,10 @@ const Navbar = () => {
     fetchNofication();
     getUser();
   }, []);
+
+  useEffect(() => {
+    return () => URL.revokeObjectURL(selectedFileUrl);
+  }, [selectedFileUrl]);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -101,9 +106,6 @@ const Navbar = () => {
                 id="navbarSupportedContent"
               >
                 <ul className="navbar-nav ms-auto text-center  d-flex align-items-center pr-3">
-                  <li>
-                    <NavLink to="/profile">Hi, {user[0]?.last_name}</NavLink>
-                  </li>
                   <li className="nav-item dropdown pr-3">
                     <a
                       className="nav-link dropdown-toggle d-flex align-items-center"
@@ -136,28 +138,68 @@ const Navbar = () => {
                     >
                       <li>
                         {notification.map((item, index) => {
-                          return (
-                            <>
-                              <NavLink
-                                className={
-                                  item.notification === 1
-                                    ? "dropdown-item bg-info"
-                                    : "dropdown-item"
-                                }
-                                key={index}
-                                to="/orders"
-                                onClick={() => {
-                                  updateNotif(item.order_id);
-                                }}
-                              >
-                                Your order {item.livestock_animal_name} has been{" "}
-                                {item.status}
-                              </NavLink>
-                            </>
-                          );
+                          const id = localStorage.getItem("id");
+                          if (item.user_id == id) {
+                            return (
+                              <>
+                                <NavLink
+                                  className={
+                                    item.notification === 1
+                                      ? "dropdown-item bg-info"
+                                      : "dropdown-item"
+                                  }
+                                  key={index}
+                                  to="/ToReceiveItem"
+                                  onClick={() => {
+                                    updateNotif(item.order_id);
+                                  }}
+                                >
+                                  Your order {item.livestock_animal_name} has
+                                  been update
+                                  <br />
+                                  Item Status: {item.status}
+                                </NavLink>
+                              </>
+                            );
+                          } else {
+                            return (
+                              <>
+                                <NavLink
+                                  className={
+                                    item.notification === 1
+                                      ? "dropdown-item bg-info"
+                                      : "dropdown-item"
+                                  }
+                                  key={index}
+                                  to="/orders"
+                                  onClick={() => {
+                                    updateNotif(item.order_id);
+                                  }}
+                                >
+                                  Item sold {item.livestock_animal_name}
+                                  from {item.last_name},{item.first_name}.
+                                  <br />
+                                  Item Status: {item.status}
+                                </NavLink>
+                              </>
+                            );
+                          }
                         })}
                       </li>
                     </ul>
+                  </li>
+                  <li>
+                    <NavLink to="/profile">
+                      <img
+                        className="rounded-circle  d-flex align-items-center"
+                        width="40px"
+                        src={
+                          selectedFileUrl
+                            ? `data:image/jpeg;base64,${selectedFileUrl}`
+                            : `https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg`
+                        }
+                      />
+                    </NavLink>
                   </li>
                   <li className="nav-item dropdown">
                     <a

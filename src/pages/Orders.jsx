@@ -58,7 +58,9 @@ const Order = () => {
       .put(`http://localhost:8080/order/toShipStatus/${order_id}`, {
         status: status,
       })
-      .then((response) => {})
+      .then((response) => {
+        fetchOrder();
+      })
       .catch((error) => {
         console.error(error);
       });

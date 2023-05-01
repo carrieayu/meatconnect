@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [firstName, setFirsName] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -16,12 +16,13 @@ const Profile = () => {
   const [newPass, setNewPass] = React.useState("");
   const [confirmPass, setConfirmPass] = React.useState("");
   const [error, setError] = React.useState("");
+  const [selectedFile, setSelectedFile] = React.useState(null);
+  const [selectedFileUrl, setSelectedFileUrl] = React.useState("");
 
   const onChangePass = (event) => {
     axios
       .get(`http://localhost:8080/user/retrieve/${localStorage.getItem("id")}`)
       .then((response) => {
-      
         if (event.target.value !== response.data[0].user_password) {
           setError("Password Does not Match");
           event.preventDefault();
@@ -37,14 +38,15 @@ const Profile = () => {
   };
 
   const onDeleteAccnt = (event) => {
-    const confirmed = window.confirm("Are you sure you want to Delete/Deactivate your Account?");
-    if(confirmed){
+    const confirmed = window.confirm(
+      "Are you sure you want to Delete/Deactivate your Account?"
+    );
+    if (confirmed) {
       axios
         .put(
           `http://localhost:8080/user/deactivate/${localStorage.getItem("id")}`
         )
         .then((response) => {
-        
           localStorage.clear();
           alert("Account Deleted Successfully");
           navigate("/");
@@ -52,8 +54,7 @@ const Profile = () => {
         .catch((error) => {
           console.error(error);
         });
-    }else{
-      
+    } else {
     }
     event.preventDefault();
   };
@@ -65,20 +66,25 @@ const Profile = () => {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("id", localStorage.getItem("id"));
+    formData.append("progress", 1);
+    formData.append("user_contacts", phone);
+    formData.append("name", email);
+    formData.append("address", address);
+    formData.append("username", username);
+    formData.append("password", newPass === "" ? oldPass : newPass);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("image", selectedFile);
+
     axios
-      .post(`http://localhost:8080/user/update`, {
-        id: localStorage.getItem("id"),
-        progress: 1,
-        contacts: phone,
-        address: address,
-        name: email,
-        username: username,
-        password: newPass === "" ? oldPass : newPass,
-        firstName: firstName,
-        lastName: lastName,
+      .put(`http://localhost:8080/user/update`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
       .then((response) => {
-        console.log(response.data);
         alert("User Profile Updated Successfully");
         setError("");
       })
@@ -93,22 +99,34 @@ const Profile = () => {
     axios
       .get(`http://localhost:8080/user/retrieve/${user_id}`)
       .then((response) => {
-        setFirsName(response.data[0].first_name);
-        setLastName(response.data[0].last_name);
-        setPhone(response.data[0].user_contacts);
-        setAddress(response.data[0].user_address);
-        setEmail(response.data[0].user_email);
-        setUsername(response.data[0].user_name);
-        setOldPass(response.data[0].user_password);
+        setFirstName(response.data.user[0].first_name);
+        setLastName(response.data.user[0].last_name);
+        setPhone(response.data.user[0].user_contacts);
+        setAddress(response.data.user[0].user_address);
+        setEmail(response.data.user[0].user_email);
+        setUsername(response.data.user[0].user_name);
+        setOldPass(response.data.user[0].user_password);
+        setSelectedFileUrl(response.data.user[0].user_photo);
+        console.log(selectedFileUrl);
       })
       .catch((error) => {
         console.error(error);
       });
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setSelectedFileUrl(URL.createObjectURL(file));
+  };
+
   React.useEffect(() => {
     fetchUser();
   }, []);
+
+  React.useEffect(() => {
+    return () => URL.revokeObjectURL(selectedFileUrl);
+  }, [selectedFileUrl]);
 
   return (
     <>
@@ -117,11 +135,19 @@ const Profile = () => {
         <div class="row">
           <div class="col-md-3 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-              <img
-                class="rounded-circle mt-5"
-                width="150px"
-                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-              />
+              {
+                <img
+                  class="rounded-circle mt-5"
+                  width="150px"
+                  src={
+                    selectedFileUrl
+                      ? `data:image/jpeg;base64,${selectedFileUrl}`
+                      : `https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg`
+                  }
+                />
+              }
+              <input type="file" onChange={handleFileChange} />
+
               <span class="font-weight-bold">
                 {firstName} {lastName}
               </span>
@@ -141,7 +167,7 @@ const Profile = () => {
                     type="text"
                     class="form-control"
                     value={firstName}
-                    onChange={(event) => setFirsName(event.target.value)}
+                    onChange={(event) => setFirstName(event.target.value)}
                   />
                 </div>
                 <div class="col-md-6">

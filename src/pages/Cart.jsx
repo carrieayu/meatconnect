@@ -1,23 +1,22 @@
-import React, { useEffect , useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Footer, Navbar } from "../components";
-import { Link, useNavigate} from "react-router-dom";
-import axios, {  } from "axios";
-
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Cart = () => {
   const user_id = localStorage.getItem("id");
   const [state, setState] = useState([]);
-  const [quantity,setQuantity] = useState([]);
-  const [checkoutChart,setCheckoutChart] = useState([]);
-  const [total,setTotal] = useState(0);
+  const [quantity, setQuantity] = useState([]);
+  const [checkoutChart, setCheckoutChart] = useState([]);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
- 
+
   const getCart = () => {
     axios
       .get(`http://localhost:8080/cart/retrieveAll/${user_id}`)
       .then((response) => {
         setState(response.data.animals);
-        setQuantity(response.data.animals.map(index => 0))
+        setQuantity(response.data.animals.map((index) => 0));
       })
       .catch((error) => {
         console.error(error);
@@ -31,7 +30,7 @@ const Cart = () => {
       .catch((error) => {
         console.error(error);
       });
-      getCart();
+    getCart();
   };
 
   useEffect(() => {
@@ -53,57 +52,61 @@ const Cart = () => {
     );
   };
 
-  const addItem =(idx, selectedItem)=> {
-   
-    setQuantity(quantity.map((item,index) =>{
-
-      if(index === idx){
-       const count = item + 1
-        if(count === 1){
-          setCheckoutChart(prevArray => [...prevArray,selectedItem]);
+  const addItem = (idx, selectedItem) => {
+    setQuantity(
+      quantity.map((item, index) => {
+        if (index === idx) {
+          const count = item + 1;
+          if (count === 1) {
+            setCheckoutChart((prevArray) => [...prevArray, selectedItem]);
+          }
+          return count;
         }
-       return count
-      }
-      return item
-    }))
+        return item;
+      })
+    );
   };
-  
-  const removeItem = (idx,id) => {
-  setQuantity(quantity.map((item,index) =>{
-   
-    if(index === idx){
-      const count = item - 1
-      if(count === 0){
-        const updatedItems = checkoutChart.filter(item => item.cart_id !== id);
-        setCheckoutChart(updatedItems);
-      }
-     return count
-    }
-    return item 
-  }))
+
+  const removeItem = (idx, id) => {
+    setQuantity(
+      quantity.map((item, index) => {
+        if (index === idx) {
+          const count = item - 1;
+          if (count === 0) {
+            const updatedItems = checkoutChart.filter(
+              (item) => item.cart_id !== id
+            );
+            setCheckoutChart(updatedItems);
+          }
+          return count;
+        }
+        return item;
+      })
+    );
   };
-  
+
   const ShowCart = () => {
     let subtotal = 0;
     let shipping = 30;
     let totalItems = 0;
-    
+
     const totalPrice = state.reduce((prevItem, item, index) => {
       return prevItem + item.livestock_animal_price * quantity[index];
     }, 0);
 
-    
     let checkQtyInEveryCart = quantity.every((element) => element === 0);
-    checkQtyInEveryCart ? setTotal(0) : setTotal(totalPrice + shipping )
-  
-    const checkout = (quantity) =>{
-      checkQtyInEveryCart ?  alert('No item added to the cart') : navigate('/checkout', { state: { item: checkoutChart , qty: quantity } });
-  
-    }
+    checkQtyInEveryCart ? setTotal(0) : setTotal(totalPrice + shipping);
+
+    const checkout = (quantity) => {
+      checkQtyInEveryCart
+        ? alert("No item added to the cart")
+        : navigate("/checkout", {
+            state: { item: checkoutChart, qty: quantity },
+          });
+    };
     state.map((item) => {
       return (totalItems += item.quantity);
     });
-
 
     return (
       <>
@@ -116,7 +119,7 @@ const Cart = () => {
                     <h5 className="mb-0">Item List</h5>
                   </div>
                   <div className="card-body">
-                    {state.map((item,idx )=> {
+                    {state.map((item, idx) => {
                       return (
                         <div key={item.livestock_animal_id}>
                           <div className="row d-flex align-items-center">
@@ -141,15 +144,17 @@ const Cart = () => {
                               <p>Type: {item.livestock_animal_type}</p>
                               {/* <p>Size: M</p> */}
                               <div>
-                            <button className="btn btn-danger"
-                                    onClick={()=>{
-                                      deleteItem(item.cart_id)
-                                    }}>
-                            Delete
-                            </button>
-                          </div>
+                                <button
+                                  className="btn btn-danger"
+                                  onClick={() => {
+                                    deleteItem(item.cart_id);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </div>
-                         
+
                             <div className="col-lg-4 col-md-6">
                               <div
                                 className="d-flex mb-4"
@@ -157,7 +162,7 @@ const Cart = () => {
                               >
                                 <button
                                   className="btn px-3"
-                                  disabled={quantity[idx]=== 0}
+                                  disabled={quantity[idx] === 0}
                                   onClick={() => {
                                     removeItem(idx, item.cart_id);
                                   }}
@@ -169,7 +174,10 @@ const Cart = () => {
 
                                 <button
                                   className="btn px-3"
-                                  disabled={quantity[idx] === item.livestock_animal_stock}
+                                  disabled={
+                                    quantity[idx] ===
+                                    item.livestock_animal_stock
+                                  }
                                   onClick={() => {
                                     addItem(idx, item);
                                   }}
@@ -183,8 +191,7 @@ const Cart = () => {
                                   <span className="text-muted">
                                     {quantity[idx]}
                                   </span>{" "}
-                                  x ₱
-                                  {item.livestock_animal_price}
+                                  x ₱{item.livestock_animal_price}
                                 </strong>
                               </p>
                             </div>
@@ -206,11 +213,18 @@ const Cart = () => {
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                         Products ({checkoutChart.length})
-                        {state.map((item,index) => {
-                          if(quantity[index] !== 0)
-                          return(
-                            <><span>{item.livestock_animal_name}: {item.livestock_animal_price}({quantity[index]})</span><br /></>
-                          )
+                        {state.map((item, index) => {
+                          if (quantity[index] !== 0)
+                            return (
+                              <>
+                                <span>
+                                  {item.livestock_animal_name}:{" "}
+                                  {item.livestock_animal_price}(
+                                  {quantity[index]})
+                                </span>
+                                <br />
+                              </>
+                            );
                         })}
                       </li>
                       <li className="list-group-item d-flex justify-content-between align-items-center px-0">
@@ -223,17 +237,16 @@ const Cart = () => {
                         </div>
                         <span>
                           <strong>
-                          <p> ${total}</p>
+                            <p> ${total}</p>
                           </strong>
                         </span>
                       </li>
                     </ul>
 
                     <button
-                      onClick={()=>checkout(quantity)}
+                      onClick={() => checkout(quantity)}
                       className="btn btn-dark btn-lg btn-block"
                     >
-                    
                       Go to checkout
                     </button>
                   </div>

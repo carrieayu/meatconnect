@@ -29,7 +29,6 @@ const LiveStock = () => {
     axios
       .delete(`http://localhost:8080/comment/deleteComment/${id}`)
       .then((response) => {
-      
         alert("Comment Deleted Successfully");
         setShowComment(false);
         setComment(null);
@@ -80,7 +79,6 @@ const LiveStock = () => {
         },
       })
       .then((response) => {
-      
         setUpdate(false);
         fetchAnimal();
       })
@@ -102,7 +100,6 @@ const LiveStock = () => {
         setPrice(response.data[0].livestock_animal_price);
         setStock(response.data[0].livestock_animal_stock);
         setId(id);
-        console.log(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -113,7 +110,6 @@ const LiveStock = () => {
     axios
       .delete(`http://localhost:8080/animal/deleteAnimal/${id}`)
       .then((response) => {
-      
         fetchAnimal();
       })
       .catch((error) => {
@@ -139,7 +135,6 @@ const LiveStock = () => {
         },
       })
       .then((response) => {
-      
         setAdd(false);
         fetchAnimal();
       })
@@ -427,12 +422,18 @@ const LiveStock = () => {
             <tbody>
               {animal?.map((animal) => (
                 <tr key={animal.id}>
-                  <td class="d-none d-md-table-cell">{animal.livestock_animal_id}</td>
+                  <td class="d-none d-md-table-cell">
+                    {animal.livestock_animal_id}
+                  </td>
                   <td>{animal.livestock_animal_name}</td>
-                  <td class="d-none d-md-table-cell">{animal.livestock_animal_type}</td>
-                  <td class="d-none d-md-table-cell">{animal.livestock_animal_detail}</td>
+                  <td class="d-none d-md-table-cell">
+                    {animal.livestock_animal_type}
+                  </td>
+                  <td class="d-none d-md-table-cell">
+                    {animal.livestock_animal_detail}
+                  </td>
                   <td
-                  class="d-none d-md-table-cell"
+                    class="d-none d-md-table-cell"
                     style={{
                       display: "flex",
                       justifyContent: "center",
