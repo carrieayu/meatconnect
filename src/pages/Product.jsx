@@ -168,6 +168,43 @@ const Product = () => {
 
       fetchAnimal();
     };
+    const insertCart = (event, id) => {
+      axios
+        .get(`http://localhost:8080/cart/checkCart/${user_id}/${id}`)
+        .then((response) => {
+          if (response.data.length === 0) {
+            axios
+              .post(`http://localhost:8080/insert/cart`, {
+                user_id: user_id,
+                livestock_animal_id: id,
+                quantity: 1,
+              })
+              .then((response) => {
+                alert("Added to Card");
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          } else {
+            axios
+              .put(`http://localhost:8080/update/cart/${user_id}`, {
+                livestock_animal_id: id,
+                quantity: response.data[0].quantity + 1,
+              })
+              .then((response) => {
+                alert("Added to Card");
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      event.preventDefault();
+    };
 
     const imageSrc = `data:image/jpeg;base64,${btoa(
       new Uint8Array(product.livestock_animal_photo?.data).reduce(
@@ -229,12 +266,19 @@ const Product = () => {
               </p>
               <p className="lead">
                 <span className="text-muted">Seller : </span>
-                <Link to={"/UserProfile/" + user.user_id}>
+                <Link to={"/UserProfile/" + product.user_id}>
                   {" "}
-                  {user.user_email}
+                  {product.user_email}
                 </Link>
               </p>
-              <button className="btn btn-outline-dark">Add to Cart</button>
+              <button
+                className="btn btn-outline-dark"
+                onClick={(event) =>
+                  insertCart(event, product.livestock_animal_id)
+                }
+              >
+                Add to Cart
+              </button>
               <Link to="/cart" className="btn btn-dark mx-3">
                 Go to Cart
               </Link>

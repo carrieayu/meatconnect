@@ -56,7 +56,6 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchNofication();
-    getUser();
   }, []);
 
   useEffect(() => {
@@ -101,6 +100,7 @@ const Navbar = () => {
           </ul>
           {isLoggedIn ? (
             <>
+              {getUser()}
               <div
                 className="collapse navbar-collapse"
                 id="navbarSupportedContent"

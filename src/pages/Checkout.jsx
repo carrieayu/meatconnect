@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -16,7 +16,6 @@ const Checkout = () => {
     axios
       .get(`http://localhost:8080/cart/retrieveAll/${user_id}`)
       .then((response) => {
-      
         setState(response.data.animals);
       })
       .catch((error) => {
@@ -121,7 +120,6 @@ const Checkout = () => {
                       }
                     )
                     .then((response) => {
-                  
                       alert("Item Ordered Successfully!!");
                       navigate("/");
                     })
@@ -176,7 +174,6 @@ const Checkout = () => {
                       }
                     )
                     .then((response) => {
-                    
                       navigate("/");
                     })
                     .catch((error) => {
@@ -198,7 +195,7 @@ const Checkout = () => {
     let subtotal = 0;
     let shipping = 30.0;
     let totalItems = 0;
-   
+
     const totalPrice = state.reduce((prevItem, item, index) => {
       return prevItem + item.livestock_animal_price * qty[index];
     }, 0);
@@ -219,13 +216,19 @@ const Checkout = () => {
                 <div className="card-body">
                   <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                       Products ({item.length})
-                        {state.map((item,index) => {
-                          if(qty[index] !== 0)
-                          return(
-                            <><span>{item.livestock_animal_name}: {item.livestock_animal_price}({qty[index]})</span><br /></>
-                          )
-                        })}
+                      Products ({item.length})
+                      {state.map((item, index) => {
+                        if (qty[index] !== 0)
+                          return (
+                            <>
+                              <span>
+                                {item.livestock_animal_name}:{" "}
+                                {item.livestock_animal_price}({qty[index]})
+                              </span>
+                              <br />
+                            </>
+                          );
+                      })}
                     </li>
                     <li className="list-group-item d-flex justify-content-between align-items-center px-0">
                       Shipping
@@ -236,10 +239,7 @@ const Checkout = () => {
                         <strong>Total amount</strong>
                       </div>
                       <span>
-                        <strong>
-                          $
-                          {totalPrice + shipping}
-                        </strong>
+                        <strong>${totalPrice + shipping}</strong>
                       </span>
                     </li>
                   </ul>
