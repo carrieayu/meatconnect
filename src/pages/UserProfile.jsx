@@ -29,7 +29,6 @@ const UserProfile = () => {
       })
       .then((response) => {
         alert("Rating Submitted Successfully!!!");
-      
       })
       .catch((error) => {
         console.error(error);
@@ -94,8 +93,8 @@ const UserProfile = () => {
                 width="150px"
                 src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
               />
-              <span class="font-weight-bold">{user.user_name}</span>
-              <span class="text-black-50">{user.user_email}</span>
+              {/* <span class="font-weight-bold">{user.user_name}</span> */}
+              {/* <span class="text-black-50">{user.user_email}</span> */}
               <span> </span>
             </div>
           </div>
@@ -241,7 +240,10 @@ const UserProfile = () => {
 
                   <div class="col-6">
                     <div class="pull-right">
-                      <button class="btn btn-success send btn-sm" onClick={onSubmitRating}>
+                      <button
+                        class="btn btn-success send btn-sm"
+                        onClick={onSubmitRating}
+                      >
                         Send <i class="fa fa-long-arrow-right ml-1"></i>
                       </button>
                     </div>

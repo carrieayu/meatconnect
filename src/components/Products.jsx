@@ -5,7 +5,7 @@ import { addCart } from "../redux/action";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Products = () => {
@@ -14,7 +14,14 @@ const Products = () => {
   const [filter, setFilter] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const insertCart = (event, id) => {
+  const navigate = useNavigate();
+  const insertCart = (event, id, user_id) => {
+    if (!localStorage.getItem("id")) {
+      return alert("Please login first");
+    }
+    if (user_id == localStorage.getItem("id")) {
+      return alert("Can't order item that is yours");
+    }
     axios
       .get(`http://localhost:8080/cart/checkCart/${user_id}/${id}`)
       .then((response) => {
@@ -171,6 +178,9 @@ const Products = () => {
                   key={animals.livestock_animal_id}
                 >
                   <img
+                    onClick={() => {
+                      navigate(`/product/${animals.livestock_animal_id}`);
+                    }}
                     className="card-img-top p-3"
                     src={`data:image/jpeg;base64,${animals.livestock_animal_photo}`}
                     alt={animal.livestock_animal_name}
@@ -206,10 +216,15 @@ const Products = () => {
                     >
                       View Details
                     </Link>
+
                     <button
                       className="btn btn-dark m-1"
                       onClick={(event) =>
-                        insertCart(event, animals.livestock_animal_id)
+                        insertCart(
+                          event,
+                          animals.livestock_animal_id,
+                          animals.user_id
+                        )
                       }
                     >
                       Add to Cart

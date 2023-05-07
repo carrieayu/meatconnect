@@ -168,7 +168,10 @@ const Product = () => {
 
       fetchAnimal();
     };
-    const insertCart = (event, id) => {
+    const insertCart = (event, id, user_id) => {
+      if (user_id == localStorage.getItem("id")) {
+        return alert("Can't order item that is yours");
+      }
       axios
         .get(`http://localhost:8080/cart/checkCart/${user_id}/${id}`)
         .then((response) => {
@@ -267,20 +270,26 @@ const Product = () => {
               <p className="lead">
                 <span className="text-muted">Seller : </span>
                 <Link to={"/UserProfile/" + product.user_id}>
-                  {" "}
                   {product.user_email}
                 </Link>
               </p>
               <button
                 className="btn btn-outline-dark"
                 onClick={(event) =>
-                  insertCart(event, product.livestock_animal_id)
+                  insertCart(
+                    event,
+                    product.livestock_animal_id,
+                    product.user_id
+                  )
                 }
               >
                 Add to Cart
               </button>
               <Link to="/cart" className="btn btn-dark mx-3">
                 Go to Cart
+              </Link>
+              <Link to="/message" className="btn btn-dark mx-3">
+                Message Seller
               </Link>
             </div>
           </div>

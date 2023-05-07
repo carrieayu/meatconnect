@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Footer, Navbar } from "../components";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
+  const id = localStorage.getItem("id");
 
+  useEffect(() => {
+    if (localStorage.getItem("id")) {
+      navigate("/");
+    }
+  }, []);
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");

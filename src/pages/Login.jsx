@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Footer, Navbar } from "../components";
 import axios from "axios";
@@ -8,6 +8,12 @@ const Login = () => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
+
+  useEffect(() => {
+    if (localStorage.getItem("id")) {
+      navigate("/");
+    }
+  }, []);
 
   const onSubmit = (event) => {
     if (username === "admin" && password === "admin") {

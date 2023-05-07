@@ -241,6 +241,11 @@ const Navbar = () => {
                         </NavLink>
                       </li>
                       <li>
+                        <NavLink className="dropdown-item" to="/salesreport">
+                          Sales Report
+                        </NavLink>
+                      </li>
+                      <li>
                         <NavLink className="dropdown-item" to="/message">
                           Chat
                         </NavLink>
