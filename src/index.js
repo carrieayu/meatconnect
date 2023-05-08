@@ -30,7 +30,8 @@ import {
   ChatMgt,
   RatingFeedbacks,
   NotificationMgt,
-  PurchaseHistory
+  PurchaseHistory,
+  Invoice
 } from "./pages";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -53,6 +54,7 @@ root.render(
         <Route path="/UserProfile/:id" element={<UserProfile />} />
         <Route path="/orders" element={<Order />} />
         <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Invoice/:id" element={<Invoice/>} />
         <Route path="/AccountManagement" element={<AccountMgt />} />
         <Route path="/PostManagement" element={<PostMgt />} />
         <Route path="/ChatManagement" element={<ChatMgt />} />

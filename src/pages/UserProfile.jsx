@@ -7,6 +7,7 @@ const UserProfile = () => {
   const reporter_id = localStorage.getItem("id");
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [firstName, setFirsName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -47,17 +48,10 @@ const UserProfile = () => {
 
   const fetchUser = () => {
     axios
-      .get(`http://localhost:8080/user/retrieve/${id}`)
+      .get(`http://localhost:8080/getUserByID/${id}`)
       .then((response) => {
         console.log(response.data[0]);
         setUser(response.data[0]);
-        setFirsName(response.data[0].first_name);
-        setLastName(response.data[0].last_name);
-        setPhone(response.data[0].user_contacts);
-        setAddress(response.data[0].user_address);
-        setEmail(response.data[0].user_email);
-        setUsername(response.data[0].user_name);
-        setOldPass(response.data[0].user_password);
       })
       .catch((error) => {
         console.error(error);
@@ -88,13 +82,22 @@ const UserProfile = () => {
         <div class="row">
           <div class="col-md-12">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-              <img
-                class="rounded-circle mt-5"
-                width="150px"
-                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-              />
-              {/* <span class="font-weight-bold">{user.user_name}</span> */}
-              {/* <span class="text-black-50">{user.user_email}</span> */}
+              {user.userhoto ? (
+                <img
+                  class="rounded-circle mt-5"
+                  width="150px"
+                  src={user.photo}
+                />
+              ) : (
+                <img
+                  class="rounded-circle mt-5"
+                  width="150px"
+                  src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                />
+              )}
+
+              <span class="font-weight-bold">{user.user_name}</span>
+              <span class="text-black-50">{user.user_email}</span>
               <span> </span>
             </div>
           </div>
@@ -109,7 +112,7 @@ const UserProfile = () => {
                   <input
                     type="text"
                     class="form-control"
-                    value={firstName}
+                    value={user.first_name}
                     disabled
                     onChange={(event) => setFirsName(event.target.value)}
                   />
@@ -119,7 +122,7 @@ const UserProfile = () => {
                   <input
                     type="text"
                     class="form-control"
-                    value={lastName}
+                    value={user.last_name}
                     disabled
                     onChange={(event) => setLastName(event.target.value)}
                   />
@@ -127,21 +130,11 @@ const UserProfile = () => {
               </div>
               <div class="row mt-3">
                 <div class="col-md-12">
-                  <label class="labels">Username</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    value={username}
-                    disabled
-                    onChange={(event) => setUsername(event.target.value)}
-                  />
-                </div>
-                <div class="col-md-12">
                   <label class="labels">Mobile Number</label>
                   <input
                     type="number"
                     class="form-control"
-                    value={phone}
+                    value={user.contacts}
                     disabled
                     onChange={(event) => setPhone(event.target.value)}
                   />
@@ -151,7 +144,7 @@ const UserProfile = () => {
                   <input
                     type="text"
                     class="form-control"
-                    value={address}
+                    value={user.user_address}
                     disabled
                     onChange={(event) => setAddress(event.target.value)}
                   />
@@ -161,7 +154,7 @@ const UserProfile = () => {
                   <input
                     type="text"
                     class="form-control"
-                    value={email}
+                    value={user.user_email}
                     disabled
                     onChange={(event) => setEmail(event.target.value)}
                   />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Footer, Navbar } from "../components";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const ToReceiveItem = () => {
   const [order, setOrder] = React.useState([]);
@@ -13,7 +14,6 @@ const ToReceiveItem = () => {
         )}`
       )
       .then((response) => {
-      
         setOrder(response.data);
       })
       .catch((error) => {
@@ -21,44 +21,45 @@ const ToReceiveItem = () => {
       });
   };
 
-  const getStatus=(status)=>{
-    if(status === 'Pending'){
-      return 'To ship'
+  const getStatus = (status) => {
+    if (status === "Pending") {
+      return "To ship";
     }
-    if(status === 'To ship'){
-      return 'Item receive'
+    if (status === "To ship") {
+      return "Item receive";
     }
-   
-  }
+  };
 
-  const nextAction = (order_id,status)=>{
+  const nextAction = (order_id, status) => {
     axios
-    .put(
-      `http://localhost:8080/order/toShipStatus/${order_id}`,{
-        status: status
-      }
-    )
-    .then((response) => {
-      console.log(response.data)
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  }
+      .put(`http://localhost:8080/order/toShipStatus/${order_id}`, {
+        status: status,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-  const actionButton=(status,order_id)=>{
-    if(status === 'Pending'){
-      return (
-       <p className="">Waiting for seller response</p>
-      )
+  const actionButton = (status, order_id) => {
+    if (status === "Pending") {
+      return <p className="">Waiting for seller response</p>;
     }
-    if(status === 'To ship'){
+    if (status === "To ship") {
       return (
-         <button onClick={()=>{nextAction(order_id,status)}} className="btn btn-danger">Item Recieved</button>
-      )
+        <button
+          onClick={() => {
+            nextAction(order_id, status);
+          }}
+          className="btn btn-danger"
+        >
+          Item Recieved
+        </button>
+      );
     }
-
-  }
+  };
 
   React.useEffect(() => {
     fetchOrder();
@@ -87,6 +88,7 @@ const ToReceiveItem = () => {
                   <th scope="col">Quantity</th>
                   <th scope="col">Status</th>
                   <th scope="col">Action</th>
+                  <th scope="col">Invoice</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,7 +103,14 @@ const ToReceiveItem = () => {
                         <td>{data.price * data.quantity + 30}</td>
                         <td>{data.quantity}</td>
                         <td>{data.status}</td>
-                        <td>{actionButton(data.status,data.order_id)}</td>
+                        <td>{actionButton(data.status, data.order_id)}</td>
+                        <td>
+                          <button>
+                            <Link to={"/Invoice/" + data.order_id}>
+                              View Invoice
+                            </Link>
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}

@@ -1,16 +1,19 @@
 import React, { Suspense } from "react";
 import { Footer, Navbar } from "../components";
 import axios from "axios";
+import Modal from "../components/Modal";
+import { Link, useNavigate } from "react-router-dom";
 
 const Order = (props) => {
   const [order, setOrder] = React.useState([]);
   const [orderBuyer, setOrderBuyer] = React.useState([]);
   const [selectedValue, setSelectedValue] = React.useState("");
+  const [showModal, setShowModal] = React.useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value);
+  const showInvoice = () => {
+    navigate("/Invoice");
   };
-
   const id = localStorage.getItem("id");
 
   const fetchOrder = () => {
@@ -129,7 +132,6 @@ const Order = (props) => {
                   <th scope="col">Quantity</th>
                   <th scope="col">Status</th>
                   <th scope="col">Action</th>
-                  <th scope="col">Invoice</th>
                 </tr>
               </thead>
 
@@ -148,9 +150,6 @@ const Order = (props) => {
                         <td>{data.quantity}</td>
                         <td>{data.status}</td>
                         <td>{getStatus(data.status, data.order_id)}</td>
-                        <td>
-                          <button>Open Modal</button>
-                        </td>
                       </tr>
                     );
                   })}
