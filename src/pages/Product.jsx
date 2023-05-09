@@ -173,12 +173,16 @@ const Product = () => {
         return alert("Can't order item that is yours");
       }
       axios
-        .get(`http://localhost:8080/cart/checkCart/${user_id}/${id}`)
+        .get(
+          `http://localhost:8080/cart/checkCart/${localStorage.getItem(
+            "id"
+          )}/${id}`
+        )
         .then((response) => {
           if (response.data.length === 0) {
             axios
               .post(`http://localhost:8080/insert/cart`, {
-                user_id: user_id,
+                user_id: localStorage.getItem("id"),
                 livestock_animal_id: id,
                 quantity: 1,
               })
@@ -190,7 +194,7 @@ const Product = () => {
               });
           } else {
             axios
-              .put(`http://localhost:8080/update/cart/${user_id}`, {
+              .put(`http://localhost:8080/update/cart/${id}`, {
                 livestock_animal_id: id,
                 quantity: response.data[0].quantity + 1,
               })
