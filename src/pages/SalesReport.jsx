@@ -49,10 +49,10 @@ const SalesReport = () => {
                     return (
                       <tr key={index}>
                         <td>{data.livestock_animal_name}</td>
-                        <td>{data.price}</td>
+                        <td>{data.livestock_animal_price}</td>
                         <td>{data.quantity}</td>
-                        <td>{data.quantity - data.livestock_animal_stock}</td>
-                        <td>{data.price * data.quantity}</td>
+                        <td>{data.remaining}</td>
+                        <td>{data.total_sales}</td>
 
                         <td></td>
                       </tr>
