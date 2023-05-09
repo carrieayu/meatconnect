@@ -79,6 +79,52 @@ const Product = () => {
       });
   };
 
+  const insertCart = (event, id) => {
+    if (!localStorage.getItem("id")) {
+      return alert("Please login first");
+    }
+
+    axios
+      .get(
+        `http://localhost:8080/cart/checkCart/${localStorage.getItem(
+          "id"
+        )}/${id}`
+      )
+      .then((response) => {
+        if (response.data.length === 0) {
+          axios
+            .post(`http://localhost:8080/insert/cart`, {
+              user_id: user_id,
+              livestock_animal_id: id,
+              quantity: 1,
+            })
+            .then((response) => {
+              alert("Added to Card");
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } else {
+          axios
+            .put(`http://localhost:8080/update/cart/${user_id}`, {
+              livestock_animal_id: id,
+              quantity: response.data[0].quantity + 1,
+            })
+            .then((response) => {
+              alert("Added to Card");
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    event.preventDefault();
+  };
+
   useEffect(() => {
     fetchAnimal();
   }, [id]);
@@ -168,46 +214,6 @@ const Product = () => {
 
       fetchAnimal();
     };
-    const insertCart = (event, id, user_id) => {
-      if (user_id == localStorage.getItem("id")) {
-        return alert("Can't order item that is yours");
-      }
-      axios
-        .get(`http://localhost:8080/cart/checkCart/${user_id}/${id}`)
-        .then((response) => {
-          if (response.data.length === 0) {
-            axios
-              .post(`http://localhost:8080/insert/cart`, {
-                user_id: user_id,
-                livestock_animal_id: id,
-                quantity: 1,
-              })
-              .then((response) => {
-                alert("Added to Card");
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-          } else {
-            axios
-              .put(`http://localhost:8080/update/cart/${user_id}`, {
-                livestock_animal_id: id,
-                quantity: response.data[0].quantity + 1,
-              })
-              .then((response) => {
-                alert("Added to Card");
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-
-      event.preventDefault();
-    };
 
     const imageSrc = `data:image/jpeg;base64,${btoa(
       new Uint8Array(product.livestock_animal_photo?.data).reduce(
@@ -276,11 +282,7 @@ const Product = () => {
               <button
                 className="btn btn-outline-dark"
                 onClick={(event) =>
-                  insertCart(
-                    event,
-                    product.livestock_animal_id,
-                    product.user_id
-                  )
+                  insertCart(event, product.livestock_animal_id)
                 }
               >
                 Add to Cart

@@ -21,4 +21,5 @@ export { default as ChatMgt } from "./ChatMgt";
 export { default as RatingFeedbacks } from "./RatingFeedbacks";
 export { default as NotificationMgt } from "./NotificationMgt";
 export { default as PurchaseHistory } from "./PurchaseHistory";
+export { default as SalesReport } from "./SalesReport";
 export { default as Invoice } from "./Invoice";

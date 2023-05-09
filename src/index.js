@@ -33,6 +33,7 @@ import {
   PurchaseHistory,
   Invoice
 } from "./pages";
+import SalesReport from "./pages/SalesReport";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -62,6 +63,7 @@ root.render(
         <Route path="/NotificationManagement" element={<NotificationMgt />} />
         <Route path="/PurchaseHistory" element={<PurchaseHistory />} />
         <Route path="/ToReceiveItem" element={<ToReceiveItem />} />
+        <Route path="/SalesReport" element={<SalesReport />} />
         <Route path="*" element={<PageNotFound />} />
         <Route path="/product/*" element={<PageNotFound />} />
       </Routes>
