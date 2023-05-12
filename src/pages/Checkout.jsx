@@ -78,9 +78,16 @@ const Checkout = () => {
       return result;
     }
 
+    const updateItem = (id) => {
+      axios
+        .put(`http://localhost:8080/update/LiveStock/${id}`, {
+          livestock_animal_stock: qty,
+        })
+        .then((response) => {});
+    };
+
     const onSubmit = (event) => {
       //Insert into billing table
-
       if (cod) {
         axios
           .post(`http://localhost:8080/payment/insertPayment`, {
@@ -120,6 +127,7 @@ const Checkout = () => {
                       }
                     )
                     .then((response) => {
+                      updateItem(data.livestock_animal_id);
                       alert("Item Ordered Successfully!!");
                       navigate("/");
                     })
@@ -158,6 +166,7 @@ const Checkout = () => {
                 zip: formValues.zip,
                 phone: formValues.phone,
               })
+
               .then((response) => {
                 state?.map((data) => {
                   let billing_id = response.data[0].billing_id;
@@ -174,7 +183,16 @@ const Checkout = () => {
                       }
                     )
                     .then((response) => {
-                      navigate("/");
+                      axios
+                        .post(
+                          `http://localhost:8080/update/LiveStock/${data.livestock_animal_id}`,
+                          {
+                            livestock_animal_stock: data.quantity,
+                          }
+                        )
+                        .then((response) => {
+                          navigate("/");
+                        });
                     })
                     .catch((error) => {
                       console.error(error);
