@@ -6,6 +6,25 @@ const PostMgt = () => {
   const [post, setPost] = React.useState([]);
   const navigate = useNavigate();
 
+  const onUpdatePost = (event, user_id, id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to Approved this item??"
+    );
+
+    if (confirmed) {
+      axios
+        .put(`http://localhost:8080/update/animalStatus/${user_id}/${id}`)
+        .then((response) => {
+          alert("Post Approved Successfully!!");
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    event.preventDefault();
+  };
+
   const onDeletePost = (event, id) => {
     const confirmed = window.confirm(
       "Are you sure you want to Delete/Deactivate your Account?"
@@ -108,6 +127,7 @@ const PostMgt = () => {
                     <th class="d-none d-md-table-cell">Photo</th>
                     <th>Price</th>
                     <th>Stock</th>
+                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -133,7 +153,21 @@ const PostMgt = () => {
                       </td>
                       <td>{data.livestock_animal_price}</td>
                       <td>{data.livestock_animal_stock}</td>
+                      <td>{data.status === 0 ? "pending" : "approved"}</td>
                       <td>
+                        <button
+                          type="button"
+                          className="btn btn-success btn-sm"
+                          onClick={(event) =>
+                            onUpdatePost(
+                              event,
+                              data.user_id,
+                              data.livestock_animal_id
+                            )
+                          }
+                        >
+                          Approve
+                        </button>
                         <button
                           type="button"
                           className="btn btn-danger btn-sm"
@@ -156,6 +190,7 @@ const PostMgt = () => {
                     <th class="d-none d-md-table-cell">Animal Photo</th>
                     <th>Price</th>
                     <th>Stocks</th>
+                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                 </tfoot>

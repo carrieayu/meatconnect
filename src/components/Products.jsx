@@ -65,7 +65,7 @@ const Products = () => {
 
   const fetchAllAnimal = () => {
     axios
-      .get(`http://localhost:8080/animal/retrieveAll/`)
+      .get(`http://localhost:8080/animal/retrieveAllByStatus/`)
       .then((response) => {
         setAnimal(response.data.animals);
         setFilter(response.data.animals);
