@@ -12,6 +12,11 @@ const Navbar = () => {
   const [notification, setNotification] = useState([]);
   const [user, setUser] = useState([]);
   const [selectedFileUrl, setSelectedFileUrl] = React.useState("");
+  const [searchString, setSearchString] = React.useState("");
+
+  const onSearch = () => {
+    navigate(`/searchProduct/${searchString}`);
+  };
 
   const isLoggedIn = !!localStorage.getItem("id");
 
@@ -79,7 +84,23 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
+        <div class="input-group rounded">
+          <input
+            type="search"
+            class="form-control rounded"
+            placeholder="Search"
+            aria-label="Search"
+            aria-describedby="search-addon"
+            onChange={(e) => setSearchString(e.target.value)}
+          />
+          <span
+            class="input-group-text border-0"
+            id="search-addon"
+            onClick={onSearch}
+          >
+            <i class="fas fa-search"></i>
+          </span>
+        </div>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav m-auto my-2 text-center">
             <li className="nav-item">

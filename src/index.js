@@ -31,7 +31,8 @@ import {
   RatingFeedbacks,
   NotificationMgt,
   PurchaseHistory,
-  Invoice
+  Invoice,
+  SearchProduct,
 } from "./pages";
 import SalesReport from "./pages/SalesReport";
 
@@ -43,6 +44,7 @@ root.render(
         <Route path="/" element={<Home />} />
         <Route path="/product" element={<Products />} />
         <Route path="/product/:id" element={<Product />} />
+        <Route path="/searchProduct/:searchString" element={<SearchProduct />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/cart" element={<Cart />} />
@@ -55,7 +57,7 @@ root.render(
         <Route path="/UserProfile/:id" element={<UserProfile />} />
         <Route path="/orders" element={<Order />} />
         <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/Invoice/:id" element={<Invoice/>} />
+        <Route path="/Invoice/:id" element={<Invoice />} />
         <Route path="/AccountManagement" element={<AccountMgt />} />
         <Route path="/PostManagement" element={<PostMgt />} />
         <Route path="/ChatManagement" element={<ChatMgt />} />

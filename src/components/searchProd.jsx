@@ -5,15 +5,16 @@ import { addCart } from "../redux/action";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-const Products = () => {
+const SearchProd = () => {
   const user_id = localStorage.getItem("id");
+  let { searchString } = useParams();
   const [animal, setAnimal] = useState([]);
   const [filter, setFilter] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  
   const navigate = useNavigate();
   const insertCart = (event, id, user_id) => {
     if (!localStorage.getItem("id")) {
@@ -65,7 +66,7 @@ const Products = () => {
 
   const fetchAllAnimal = () => {
     axios
-      .get(`http://localhost:8080/animal/retrieveAllByStatus/`)
+      .get(`http://localhost:8080/search/${searchString}`)
       .then((response) => {
         setAnimal(response.data.animals);
         setFilter(response.data.animals);
@@ -127,45 +128,45 @@ const Products = () => {
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Poultry")}
+            onClick={() => filterProduct("Domestic")}
+          >
+            Pigs
+          </button>
+          <button
+            className="btn btn-outline-dark btn-sm m-2"
+            onClick={() => filterProduct("Mammals")}
           >
             Poultry
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Swine")}
-          >
-            Swine
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Cattle")}
-          >
-            Cattle
-          </button>
-          <button
-            className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Goats")}
+            onClick={() => filterProduct("Birds")}
           >
             Goats
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Sheep")}
+            onClick={() => filterProduct("Reptiles")}
           >
-            Sheep
+            Cow
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Horses")}
+            onClick={() => filterProduct("Amphibians")}
           >
             Horses
           </button>
           <button
             className="btn btn-outline-dark btn-sm m-2"
-            onClick={() => filterProduct("Carabao")}
+            onClick={() => filterProduct("Fish")}
           >
-            Carabao
+            Fish
+          </button>
+          <button
+            className="btn btn-outline-dark btn-sm m-2"
+            onClick={() => filterProduct("Insects")}
+          >
+            Sheeps
           </button>
         </div>
 
@@ -258,4 +259,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default SearchProd;

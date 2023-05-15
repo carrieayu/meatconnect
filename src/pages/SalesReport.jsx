@@ -40,7 +40,6 @@ const SalesReport = () => {
                   <th scope="col">Price</th>
                   <th scope="col">Sold</th>
                   <th scope="col">Remaining</th>
-                  <th scope="col">Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -52,7 +51,6 @@ const SalesReport = () => {
                         <td>{data.livestock_animal_price}</td>
                         <td>{data.quantity}</td>
                         <td>{data.remaining}</td>
-                        <td>{data.total_sales}</td>
 
                         <td></td>
                       </tr>

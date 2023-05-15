@@ -13,6 +13,7 @@ const LiveStock = () => {
   const navigate = useNavigate();
   const [animal, setAnimal] = React.useState([]);
   const [comment, setComment] = React.useState([]);
+  const [breedingType, setBreedingType] = React.useState("");
   const [animalName, setAnimalName] = React.useState("");
   const [animalType, setAnimalType] = React.useState("");
   const [animalDetail, setAnimalDetail] = React.useState("");
@@ -66,6 +67,7 @@ const LiveStock = () => {
   const updateAnimal = (event) => {
     const formData = new FormData();
     formData.append("user_id", user_id);
+    formData.append("breeding_type", breedingType);
     formData.append("animal_name", animalName);
     formData.append("animal_type", animalType);
     formData.append("animal_detail", animalDetail);
@@ -95,6 +97,7 @@ const LiveStock = () => {
       .then((response) => {
         setAnimalName(response.data[0].livestock_animal_name);
         setAnimalType(response.data[0].livestock_animal_type);
+        setBreedingType(response.data[0].breeding_type);
         setAnimalDetail(response.data[0].livestock_animal_detail);
         setAnimalPhoto(response.data[0].livestock_animal_photo);
         setPrice(response.data[0].livestock_animal_price);
@@ -121,6 +124,7 @@ const LiveStock = () => {
   const addAnimal = (event) => {
     const formData = new FormData();
     formData.append("user_id", user_id);
+    formData.append("breeding_type", breedingType);
     formData.append("animal_name", animalName);
     formData.append("animal_type", animalType);
     formData.append("animal_detail", animalDetail);
@@ -281,17 +285,126 @@ const LiveStock = () => {
                         value={animalType}
                       >
                         <option value="">Select a Type</option>
-                        <option value="Domestic">Domestic</option>
-                        <option value="Mammals">Mammals</option>
-                        <option value="Birds">Birds</option>
-                        <option value="Reptiles">Reptiles</option>
-                        <option value="Amphibians">Amphibians</option>
-                        <option value="Fish">Fish</option>
-                        <option value="Insects">Insects</option>
-                        <option value="Arachnids">Arachnids</option>
-                        <option value="Mollusks">Mollusks</option>
-                        <option value="Crustaceans">Crustaceans</option>
-                        <option value="Echinoderms">Echinoderms</option>
+                        <option value="Poultry">Poultry</option>
+                        <option value="Swine">Swine</option>
+                        <option value="Cattle">Cattle</option>
+                        <option value="Goats">Goats</option>
+                        <option value="Sheep">Sheep</option>
+                        <option value="Horses">Horses</option>
+                        <option value="Carabao">Carabao</option>
+                      </select>
+                      {/* <input
+                        type="text"
+                        className="form-control"
+                        id="animalType"
+                        placeholder="Enter Animal Type"
+                        defaultValue={animalType}
+                        onChange={(event) => setAnimalType(event.target.value)}
+                      /> */}
+                    </div>
+                    <div className="form my-3">
+                      <label htmlFor="Email">Breeding Type</label>
+                      <select
+                        style={{
+                          width: "100%",
+                          height: "40px",
+                          borderRadius: "8px",
+                        }}
+                        id="type"
+                        onChange={(event) =>
+                          setBreedingType(event.target.value)
+                        }
+                        value={breedingType}
+                      >
+                        {(function () {
+                          let rowList = [];
+                          rowList = [];
+                          if (animalType === "Poultry") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="natural mating">
+                                  natural mating
+                                </option>
+                                <option value="artificial insemination">
+                                  artificial insemination
+                                </option>
+                                <option value="insemination">
+                                  embryo transfer
+                                </option>
+                              </>
+                            );
+                          } else if (animalType === "Swine") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="natural mating">
+                                  natural mating
+                                </option>
+                                <option value="artificial insemination">
+                                  artificial insemination
+                                </option>
+                                <option value="hand mating">hand mating</option>
+                              </>
+                            );
+                          } else if (animalType === "Cattle") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="natural mating">
+                                  natural mating
+                                </option>
+                                <option value="artificial insemination">
+                                  artificial insemination
+                                </option>
+                              </>
+                            );
+                          } else if (animalType === "Goats") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="artificial insemination">
+                                  artificial insemination
+                                </option>
+                              </>
+                            );
+                          } else if (animalType === "Sheep") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="natural mating">
+                                  natural mating
+                                </option>
+                                <option value="artificial insemination">
+                                  artificial insemination
+                                </option>
+                              </>
+                            );
+                          } else if (animalType === "Horses") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="natural mating">
+                                  natural mating
+                                </option>
+                                <option value="artificial insemination">
+                                  artificial insemination
+                                </option>
+                              </>
+                            );
+                          } else if (animalType === "Carabao") {
+                            rowList.push(
+                              <>
+                                <option value="">Select a Type</option>
+                                <option value="natural mating">
+                                  natural mating
+                                </option>
+                              </>
+                            );
+                          }
+
+                          return rowList;
+                        })()}
                       </select>
                       {/* <input
                         type="text"
@@ -411,6 +524,7 @@ const LiveStock = () => {
               <tr>
                 <th class="d-none d-md-table-cell">Animal ID</th>
                 <th>Animal Name</th>
+                <th>Breeding Type</th>
                 <th class="d-none d-md-table-cell">Animal Type</th>
                 <th class="d-none d-md-table-cell">Description</th>
                 <th class="d-none d-md-table-cell">Animal Photo</th>
@@ -426,6 +540,7 @@ const LiveStock = () => {
                     {animal.livestock_animal_id}
                   </td>
                   <td>{animal.livestock_animal_name}</td>
+                  <td>{animal.breeding_type}</td>
                   <td class="d-none d-md-table-cell">
                     {animal.livestock_animal_type}
                   </td>
