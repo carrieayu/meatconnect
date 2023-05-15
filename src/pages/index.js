@@ -24,3 +24,4 @@ export { default as NotificationMgt } from "./NotificationMgt";
 export { default as PurchaseHistory } from "./PurchaseHistory";
 export { default as SalesReport } from "./SalesReport";
 export { default as Invoice } from "./Invoice";
+export { default as AccntRecovery } from "./AccntRecovery";

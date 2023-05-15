@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Order = (props) => {
   const [order, setOrder] = React.useState([]);
+  const [sort, setSort] = React.useState(false);
   const [orderBuyer, setOrderBuyer] = React.useState([]);
   const [selectedValue, setSelectedValue] = React.useState("");
   const [showModal, setShowModal] = React.useState(false);
@@ -105,6 +106,36 @@ const Order = (props) => {
     }
   };
 
+  const handleProductFilter = () => {
+    if (sort) {
+      setOrder(
+        [...order].sort((a, b) =>
+          a.livestock_animal_name > b.livestock_animal_name ? 1 : -1
+        )
+      );
+    } else {
+      setOrder(
+        [...order].sort((a, b) =>
+          a.livestock_animal_name < b.livestock_animal_name ? 1 : -1
+        )
+      );
+    }
+    setSort(!sort);
+  };
+
+  const handleOrderNumFilter = () => {
+    if (sort) {
+      setOrder(
+        [...order].sort((a, b) => (a.order_number > b.order_number ? 1 : -1))
+      );
+    } else {
+      setOrder(
+        [...order].sort((a, b) => (a.order_number < b.order_number ? 1 : -1))
+      );
+    }
+    setSort(!sort);
+  };
+
   React.useEffect(() => {
     fetchOrder();
   }, []);
@@ -124,8 +155,20 @@ const Order = (props) => {
             <table className="table bg-white rounded border">
               <thead>
                 <tr>
-                  <th scope="col">Number</th>
-                  <th scope="col">Product</th>
+                  <th
+                    scope="col"
+                    onClick={handleOrderNumFilter}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Number
+                  </th>
+                  <th
+                    scope="col"
+                    onClick={handleProductFilter}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Product
+                  </th>
                   <th scope="col">Buyer Name</th>
                   <th scope="col">Address</th>
                   <th scope="col">Total</th>

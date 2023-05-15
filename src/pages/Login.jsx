@@ -106,6 +106,15 @@ const Login = () => {
                     Register
                   </Link>{" "}
                 </p>
+                <p>
+                  Forgot Password?{" "}
+                  <Link
+                    to="/AccntRecovery"
+                    className="text-decoration-underline text-info"
+                  >
+                    Account Recovery
+                  </Link>{" "}
+                </p>
               </div>
               <div className="text-center">
                 <button class="my-2 mx-auto btn btn-dark" type="submit">

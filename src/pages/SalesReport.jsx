@@ -21,6 +21,9 @@ const SalesReport = () => {
     console.log(order);
   }, []);
 
+  const totalValue = order.reduce((acc, curr) => {
+    return acc + curr.quantity * curr.livestock_animal_price;
+  }, 0);
   return (
     <>
       <Navbar />
@@ -57,6 +60,13 @@ const SalesReport = () => {
                     );
                   })}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="2"></td>
+                  <td>Total:</td>
+                  <td>{totalValue}</td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

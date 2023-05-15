@@ -33,6 +33,7 @@ import {
   PurchaseHistory,
   Invoice,
   SearchProduct,
+  AccntRecovery,
 } from "./pages";
 import SalesReport from "./pages/SalesReport";
 
@@ -44,7 +45,10 @@ root.render(
         <Route path="/" element={<Home />} />
         <Route path="/product" element={<Products />} />
         <Route path="/product/:id" element={<Product />} />
-        <Route path="/searchProduct/:searchString" element={<SearchProduct />} />
+        <Route
+          path="/searchProduct/:searchString"
+          element={<SearchProduct />}
+        />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/cart" element={<Cart />} />
@@ -67,6 +71,7 @@ root.render(
         <Route path="/ToReceiveItem" element={<ToReceiveItem />} />
         <Route path="/SalesReport" element={<SalesReport />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/AccntRecovery" element={<AccntRecovery />} />
         <Route path="/product/*" element={<PageNotFound />} />
       </Routes>
     </Provider>

@@ -83,6 +83,7 @@ const LiveStock = () => {
       .then((response) => {
         setUpdate(false);
         fetchAnimal();
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -141,6 +142,7 @@ const LiveStock = () => {
       .then((response) => {
         setAdd(false);
         fetchAnimal();
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
