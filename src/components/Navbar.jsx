@@ -84,7 +84,7 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div class="input-group rounded">
+        <div class="input-group rounded" style={{ maxWidth: '400px' }}>
           <input
             type="search"
             class="form-control rounded"
