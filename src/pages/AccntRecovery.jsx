@@ -19,6 +19,11 @@ const AccntRecovery = () => {
   };
 
   const onResetPassword = () => {
+    if (password === "" || confirmPass === "") {
+      alert("Please input password!!");
+      return;
+    }
+
     if (confirmPass !== password) {
       alert("Password does not match");
       return;
@@ -74,6 +79,7 @@ const AccntRecovery = () => {
                     id="Password"
                     placeholder="Password"
                     value={password}
+                    required
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
@@ -85,6 +91,7 @@ const AccntRecovery = () => {
                     id="Password"
                     placeholder="Password"
                     value={confirmPass}
+                    required
                     onChange={(e) => setConfirmPass(e.target.value)}
                   />
                 </div>
